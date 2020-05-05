@@ -2,4 +2,4 @@
 
 # YouTube Hermes Config Automation
 
-Replace YouTube UI configuration tools with buganizer driven automation.
+Replace YouTube Hermes configuration tools with buganizer driven automation.
