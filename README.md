@@ -6,6 +6,6 @@ Replace YouTube Hermes configuration tools with buganizer driven automation.
 
 Run Instructions:
 
-pip install mechanicalsoup
-export PROJECT='google.com:youtube-admin-pacing-server'
+pip install mechanicalsoup  
+export PROJECT='google.com:youtube-admin-pacing-server'  
 python pub.py $PROJECT BuganizerCR
