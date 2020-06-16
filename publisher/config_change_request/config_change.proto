@@ -2,19 +2,19 @@ syntax = "proto3";
 
 message ConfigChangeRequest {
   oneof ConfigType {
-  EnqueueRule enqueue_rule = 1;
-  RoutingRule routing_rule = 2;
-  QueueInfo queue_info = 3;
+    EnqueueRule enqueue_rule = 1;
+    RoutingRule routing_rule = 2;
+    QueueInfo queue_info = 3;
   }
   string reporter = 4;
 }
 
 message EnqueueRule {
   message Change {
-  string method = 1;
-  string queue = 2;
-  repeated string features = 3;
-  int32 priority = 4; 
+    string method = 1;
+    string queue = 2;
+    repeated string features = 3;
+    int32 priority = 4; 
   }
   repeated Change changes = 1;
 }
