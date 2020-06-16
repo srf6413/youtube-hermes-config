@@ -11,7 +11,7 @@ PROJECT_PATH = "/usr/local/google/home/sauloferreira/Development/youtube-hermes-
 DRIVER_PATH = "/opt/google/chrome/chromedriver"
 #Path to Chrome profile
 PROFILE_PATH = "/usr/local/google/home/sauloferreira/.config/chrome-remote-desktop/"\
-    "chrome-config/google-chrome/Profile 2"
+  "chrome-config/google-chrome/Profile 2"
 #EnqueueRule
 ENQUEUE_RULE_COMMAND_LINES_COUNT = 4
 #RoutingRule
