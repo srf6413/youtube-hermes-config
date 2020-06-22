@@ -31,7 +31,7 @@ class WebUtils():
       return True
     except Exception:
       print("ERROR: Failed to load Chrome Driver. Check path in constants.py"\
-        " and make sure there are no open tabs with the desired profile")
+        " and make sure there are no open windows with the desired profile")
       return False
 
   def quit_scrape(self):

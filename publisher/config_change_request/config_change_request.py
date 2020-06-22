@@ -5,7 +5,8 @@ EnqueueRule, RoutingRule, and QueueInfo classes and uses the strategy design pat
 """
 from google.cloud import pubsub_v1
 import constants
-from config_change_request import config_type_pb2
+from config_change_request import config_change_pb2
+import time
 
 class Context:
   """Accepts a strategy in order to parse and publish a template.
@@ -34,17 +35,29 @@ class ConfigurationTypes():
 
   def __init__(self, reporter, config_change_type):
     self.config_change_type = config_change_type
-    self.config_change_request = config_type_pb2.ConfigChangeRequest()
+    self.config_change_request = config_change_pb2.ConfigChangeRequest()
     self.config_change_request.reporter = reporter
+    
+  def get_callback(self, api_future, data, ref):
+    """Wrap message data in the context of the callback function."""
+    def callback(api_future):
+        try:
+            print("Published message with type {}. Message ID: {}".format(self.config_change_type, api_future.result()))
+            ref["num_messages"] += 1
+        except Exception:
+            print("A problem occured when publishing {}: {}\n".format(data, api_future.exception()))
+            raise
+    return callback
 
   def publish(self):
     """Publish a message to a Pub/Sub topic.
     """
     client = pubsub_v1.PublisherClient()
     topic_path = client.topic_path(constants.PROJECT_ID, constants.TOPIC_NAME)
+    ref = dict({"num_messages": 0})
     data = self.config_change_request.SerializeToString()
-    client.publish(topic_path, data=data)
-    print("Message", self.config_change_type, "sent!")
+    api_future = client.publish(topic_path, data=data)
+    api_future.add_done_callback(self.get_callback(api_future, data, ref))
 
 class EnqueueRule(ConfigurationTypes):
   """Defines how EnqueueRule templates should be parsed"""
@@ -60,46 +73,48 @@ class EnqueueRule(ConfigurationTypes):
       bool: True if the comment was in valid template format.
       False if not in valid template format.
     """
-    method_index = 1
-    queue_index = 2
-    features_index = 3
-    priority_index = 4
+    #These keep track of the current line number of each specifier for EnqueueRule.
+    #Starts at 1 since the first line is reserved for the Configuration specifier. 
+    method_specifier_line_number = 1
+    queue_specifier_line_number = 2
+    features_specifier_line_number = 3
+    priority_specifier_line_number = 4
+    
+    #Length of each specifier
+    method_specifier_length = len(constants.ENQUEUE_RULE_METHOD_SPECIFIER)
+    queue_specifier_length = len(constants.ENQUEUE_RULE_QUEUE_SPECIFIER)
+    features_specifier_length = len(constants.ENQUEUE_RULE_FEATURES_SPECIFIER)
+    priority_specifier_length = len(constants.ENQUEUE_RULE_PRIORITY_SPECIFIER)
+    
+    if (len(template) - 1) % constants.ENQUEUE_RULE_COMMAND_LINES_COUNT > 0:
+        return False
 
-    if len(template) < constants.ENQUEUE_RULE_COMMAND_LINES_COUNT + 1:
-      return False
-
-    while priority_index <= len(template):
+    while priority_specifier_line_number <= len(template):
       change = self.config_change_request.enqueue_rule.Change()
       try:
-        method_specifier = template[method_index][:8]
-        queue_specifier = template[queue_index][:7]
-        features_specifier = template[features_index][:10]
-        priority_specifier = template[priority_index][:10]
+        method_specifier = template[method_specifier_line_number][:method_specifier_length]
+        queue_specifier = template[queue_specifier_line_number][:queue_specifier_length]
+        features_specifier = template[features_specifier_line_number][:features_specifier_length]
+        priority_specifier = template[priority_specifier_line_number][:priority_specifier_length]
 
-        if method_specifier != "Method: " or queue_specifier != "Queue: " or \
-        features_specifier != "Features: " or priority_specifier != "Priority: ":
+        if method_specifier != constants.ENQUEUE_RULE_METHOD_SPECIFIER or queue_specifier != constants.ENQUEUE_RULE_QUEUE_SPECIFIER or \
+        features_specifier != constants.ENQUEUE_RULE_FEATURES_SPECIFIER or priority_specifier != constants.ENQUEUE_RULE_PRIORITY_SPECIFIER:
           return False
       except Exception:
         return False
 
-      method = template[method_index][8:]
-      queue = template[queue_index][7:]
-      features = template[features_index][10:]
-      priority = template[priority_index][10:]
-
-      change.method = method
-      change.queue = queue
-      change.priority = int(priority)
-      for feature in features.split(", "):
-        change.features.append(feature)
-
+      change.method = template[method_specifier_line_number][method_specifier_length:]
+      change.queue = template[queue_specifier_line_number][queue_specifier_length:]
+      change.features.extend(template[features_specifier_line_number][features_specifier_length:].split(", "))
+      change.priority = int(template[priority_specifier_line_number][priority_specifier_length:])
       self.config_change_request.enqueue_rule.changes.append(change)
-      method_index += constants.ENQUEUE_RULE_COMMAND_LINES_COUNT
-      queue_index += constants.ENQUEUE_RULE_COMMAND_LINES_COUNT
-      features_index += constants.ENQUEUE_RULE_COMMAND_LINES_COUNT
-      priority_index += constants.ENQUEUE_RULE_COMMAND_LINES_COUNT
-
-    return priority_index - constants.ENQUEUE_RULE_COMMAND_LINES_COUNT == len(template) - 1
+      
+      method_specifier_line_number += constants.ENQUEUE_RULE_COMMAND_LINES_COUNT
+      queue_specifier_line_number += constants.ENQUEUE_RULE_COMMAND_LINES_COUNT
+      features_specifier_line_number += constants.ENQUEUE_RULE_COMMAND_LINES_COUNT
+      priority_specifier_line_number += constants.ENQUEUE_RULE_COMMAND_LINES_COUNT
+      
+    return True
 
 class RoutingRule(ConfigurationTypes):
   """Defines how RoutingRule templates should be parsed"""
@@ -115,43 +130,43 @@ class RoutingRule(ConfigurationTypes):
       bool: True if the comment was in valid template format.
       False if not in valid template format.
     """
-    method_index = 1
-    queue_index = 2
-    possible_routes_index = 3
+    #These keep track of the current line number of each specifier for RoutingRule.
+    #Starts at 1 since the first line is reserved for the Configuration specifier. 
+    method_specifier_line_number = 1
+    queue_specifier_line_number = 2
+    possible_routes_line_number = 3
 
-    if len(template) < constants.ROUTING_RULE_COMMAND_LINES_COUNT + 1:
-      return False
+    #Length of each specifier
+    method_specifier_length = len(constants.ROUTING_RULE_METHOD_SPECIFIER)
+    queue_specifier_length = len(constants.ROUTING_RULE_QUEUE_SPECIFIER)
+    possible_routes_specifier_length = len(constants.ROUTING_RULE_POSSIBLE_ROUTES_SPECIFIER)
+    
+    if (len(template) - 1) % constants.ROUTING_RULE_COMMAND_LINES_COUNT > 0:
+        return False
 
-    while possible_routes_index <= len(template):
+    while possible_routes_line_number <= len(template):
       change = self.config_change_request.routing_rule.Change()
       try:
-        method_specifier = template[method_index][:8]
-        queue_specifier = template[queue_index][:7]
-        possible_routes_specifier = template[possible_routes_index][:17]
+        method_specifier = template[method_specifier_line_number][:method_specifier_length]
+        queue_specifier = template[queue_specifier_line_number][:queue_specifier_length]
+        possible_routes_specifier = template[possible_routes_line_number][:possible_routes_specifier_length]
 
-        if method_specifier != "Method: " or queue_specifier != "Queue: " or \
-           possible_routes_specifier != "Possible-Routes: ":
+        if method_specifier != constants.ROUTING_RULE_METHOD_SPECIFIER or queue_specifier != constants.ROUTING_RULE_QUEUE_SPECIFIER or \
+           possible_routes_specifier != constants.ROUTING_RULE_POSSIBLE_ROUTES_SPECIFIER:
           return False
       except Exception:
         return False
 
-      method = template[method_index][8:]
-      queue = template[queue_index][7:]
-      possible_routes = template[possible_routes_index][17:]
-
-      change.method = method
-      change.queue = queue
-      for route in possible_routes.split(", "):
-        change.possible_routes.append(route)
-
+      change.method = template[method_specifier_line_number][method_specifier_length:]
+      change.queue = template[queue_specifier_line_number][queue_specifier_length:]
+      change.possible_routes.extend(template[possible_routes_line_number][possible_routes_specifier_length:].split(", "))
       self.config_change_request.routing_rule.changes.append(change)
+      
+      method_specifier_line_number += constants.ROUTING_RULE_COMMAND_LINES_COUNT
+      queue_specifier_line_number += constants.ROUTING_RULE_COMMAND_LINES_COUNT
+      possible_routes_line_number += constants.ROUTING_RULE_COMMAND_LINES_COUNT
 
-      method_index += constants.ROUTING_RULE_COMMAND_LINES_COUNT
-      queue_index += constants.ROUTING_RULE_COMMAND_LINES_COUNT
-      possible_routes_index += constants.ROUTING_RULE_COMMAND_LINES_COUNT
-
-    return possible_routes_index - constants.ROUTING_RULE_COMMAND_LINES_COUNT \
-      == len(template) - 1
+    return True
 
 class QueueInfo(ConfigurationTypes):
   """Defines how QueueInfo templates should be parsed"""
@@ -167,39 +182,40 @@ class QueueInfo(ConfigurationTypes):
       bool: True if the comment was in valid template format.
       False if not in valid template format.
     """
-    method_index = 1
-    queue_index = 2
-    owners_index = 3
+    #These keep track of the current line number of each specifier for QueueInfo.
+    #Starts at 1 since the first line is reserved for the Configuration specifier. 
+    method_specifier_line_number = 1
+    queue_specifier_line_number = 2
+    owners_specifier_line_number = 3
 
-    if len(template) < constants.QUEUE_INFO_COMMAND_LINES_COUNT + 1:
-      return False
+    #Length of each specifier
+    method_specifier_length = len(constants.QUEUE_INFO_METHOD_SPECIFIER)
+    queue_specifier_length = len(constants.QUEUE_INFO_QUEUE_SPECIFIER)
+    owners_specifier_length = len(constants.QUEUE_INFO_OWNERS_SPECIFIER)
+    
+    if (len(template) - 1) % constants.QUEUE_INFO_COMMAND_LINES_COUNT > 0:
+        return False
 
-    while owners_index <= len(template):
+    while owners_specifier_line_number <= len(template):
       change = self.config_change_request.queue_info.Change()
       try:
-        method_specifier = template[method_index][:8]
-        queue_specifier = template[queue_index][:7]
-        owners_specifier = template[owners_index][:8]
+        method_specifier = template[method_specifier_line_number][:method_specifier_length]
+        queue_specifier = template[queue_specifier_line_number][:queue_specifier_length]
+        owners_specifier = template[owners_specifier_line_number][:owners_specifier_length]
 
-        if method_specifier != "Method: " or queue_specifier != "Queue: " or\
-           owners_specifier != "Owners: ":
+        if method_specifier != constants.QUEUE_INFO_METHOD_SPECIFIER or queue_specifier != constants.QUEUE_INFO_QUEUE_SPECIFIER or\
+           owners_specifier != constants.QUEUE_INFO_OWNERS_SPECIFIER:
           return False
       except Exception:
         return False
 
-      method = template[method_index][8:]
-      queue = template[queue_index][7:]
-      owners = template[owners_index][8:]
-
-      change.method = method
-      change.queue = queue
-      for owner in owners.split(", "):
-        change.owner.append(owner)
-
+      change.method = template[method_specifier_line_number][method_specifier_length:]
+      change.queue = template[queue_specifier_line_number][queue_specifier_length:]
+      change.owners.extend(template[owners_specifier_line_number][owners_specifier_length:].split(", "))
       self.config_change_request.queue_info.changes.append(change)
+      
+      method_specifier_line_number += constants.QUEUE_INFO_COMMAND_LINES_COUNT
+      queue_specifier_line_number += constants.QUEUE_INFO_COMMAND_LINES_COUNT
+      owners_specifier_line_number += constants.QUEUE_INFO_COMMAND_LINES_COUNT
 
-      method_index += constants.QUEUE_INFO_COMMAND_LINES_COUNT
-      queue_index += constants.QUEUE_INFO_COMMAND_LINES_COUNT
-      owners_index += constants.QUEUE_INFO_COMMAND_LINES_COUNT
-
-    return owners_index - constants.QUEUE_INFO_COMMAND_LINES_COUNT == len(template) - 1
+    return True

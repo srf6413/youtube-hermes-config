@@ -1,4 +1,6 @@
 """Test file for the Buganizer web-scraper."""
+import sys
+sys.path.insert(1, "..")
 from io import StringIO
 from unittest.mock import patch
 import unittest
@@ -20,7 +22,7 @@ class TestsMain(unittest.TestCase):
     with patch('sys.stdout', new=StringIO()) as fake_out:
       system.begin_scrape(url)
 
-      assert "Message" in fake_out.getvalue() and "sent!" in fake_out.getvalue()
+      assert "Published message with type" in fake_out.getvalue() and "Message ID:" in fake_out.getvalue()
 
   def test_begin_scrape_non_buganizer(self):
     """Test begin_scrape with non-buganizer link.
@@ -32,7 +34,6 @@ class TestsMain(unittest.TestCase):
       system.begin_scrape(url)
       assert "ERROR: URL does not link to a Buganizer componentid, check "\
         "specified URL in constants.py" in fake_out.getvalue()
-    system.quit_scrape()
 
   def test_begin_scrape_bogus(self):
     """Test begin_scrape with non-buganizer link.
@@ -44,7 +45,6 @@ class TestsMain(unittest.TestCase):
       system.begin_scrape(url)
       assert "ERROR: Failed to reach URL, check specified URL "\
         "in constants.py" in fake_out.getvalue()
-    system.quit_scrape()
 
 class TestsWebUtils(unittest.TestCase):
   """Test methods from web_utils.py

@@ -32,7 +32,7 @@ message QueueInfo {
   message Change {
     string method = 1;
     string queue = 2;
-    repeated string owner = 3;
+    repeated string owners = 3;
   }
   repeated Change changes = 4;
 }

@@ -21,14 +21,6 @@ class System():
     if success:
       self._web_util.visit_all_issues()
 
-    def quit_scrape(self):
-      """Quit the proccess of scraping Buganizer.
-
-      Args:
-        url (str): the Buganizer url to scrape
-      """
-      self._web_util.quit_scrape()
-
 if __name__ == "__main__":
   system = System()
   system.begin_scrape(constants.URL)
