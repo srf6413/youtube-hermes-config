@@ -11,7 +11,6 @@ import constants
 class WebUtils():
   """Responsible for all Buganizer html scraping."""
   def __init__(self):
-    self._buganizer_issues = []
     self._driver = None
     self._message_util = message_utils.MessageUtils()
 
@@ -26,7 +25,7 @@ class WebUtils():
       options = webdriver.ChromeOptions()
       options.add_argument("user-data-dir=" + constants.PROFILE_PATH)
       driver = webdriver.Chrome(executable_path=constants.DRIVER_PATH,
-                    options=options)
+                                options=options)
       self._driver = driver
       return True
     except Exception:
@@ -51,19 +50,20 @@ class WebUtils():
             url (str): the Buganizer url to scrape
 
         Return:
-            bool : True if scraped successfully. False if not.
+            list : List with all the buganizer issues found under the componentid.
         """
+    buganizer_issues = []
     if not self.setup_webdriver():
-      return False
+      return buganizer_issues
 
     try:
       self._driver.get(url)
     except Exception:
       self._driver.close()
       print(
-        "ERROR: Failed to reach URL, check specified URL in constants.py"
+          "ERROR: Failed to reach URL, check specified URL in constants.py"
       )
-      return False
+      return buganizer_issues
 
     source_html = self._driver.page_source
     soup = BeautifulSoup(source_html, "html.parser")
@@ -80,30 +80,25 @@ class WebUtils():
           page_title = soup.title.string
           time.sleep(1)
         print(
-          "Close browser window and restart program now that you are logged in."
+            "Close browser window and restart program now that you are logged in."
         )
-        return False
+        return buganizer_issues
       print("ERROR: URL does not link to a Buganizer componentid, check specified URL "\
         "in constants.py")
-      return False
+      return buganizer_issues
 
     for tbody in soup.find_all('tbody'):
       for _tr in tbody.find_all('tr'):
         issue_link = "https://b.corp.google.com/issues/" + _tr.get(
-          'data-row-id')
-        self._buganizer_issues.append(issue_link)
-    return True
+            'data-row-id')
+        buganizer_issues.append(issue_link)
+    return buganizer_issues
 
-  def visit_all_issues(self):
+  def visit_all_issues(self, issues):
     """From the list of buganizer issues, visit each issue and
         send to message_utils to be parsed.
         """
-    if len(self._buganizer_issues) == 0:
-      print(
-        "ERROR: Buganizer has not gathered issues and is attempting to visit them."
-      )
-      return
-    for issue in self._buganizer_issues:
+    for issue in issues:
       reporter = "empty"
       self._driver.get(issue)
       while "@google.com" not in reporter:
@@ -112,7 +107,7 @@ class WebUtils():
         reporter_tag = soup.find("div", "bv2-issue-metadata-field-inner "\
           "bv2-issue-metadata-field-reporter")
         reporter = reporter_tag["aria-label"].replace(
-          "Reporter value is ", "")
+            "Reporter value is ", "")
 
       self._message_util.parse_page(soup, reporter)
     self.quit_scrape()

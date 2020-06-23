@@ -1,7 +1,7 @@
 """Test file for the Buganizer web-scraper."""
+from io import StringIO
 import sys
 sys.path.insert(1, "..")
-from io import StringIO
 from unittest.mock import patch
 import unittest
 import main
@@ -22,7 +22,8 @@ class TestsMain(unittest.TestCase):
     with patch('sys.stdout', new=StringIO()) as fake_out:
       system.begin_scrape(url)
 
-      assert "Published message with type" in fake_out.getvalue() and "Message ID:" in fake_out.getvalue()
+      assert "Published message with type" in fake_out.getvalue() and \
+      "Message ID:" in fake_out.getvalue()
 
   def test_begin_scrape_non_buganizer(self):
     """Test begin_scrape with non-buganizer link.
@@ -71,16 +72,6 @@ class TestsWebUtils(unittest.TestCase):
     with patch('sys.stdout', new=StringIO()) as fake_out:
       web_driver.quit_scrape()
       assert "ERROR: Driver does is not setup." in fake_out.getvalue()
-
-  def test_visit_all_issues_not_setup(self):
-    """Test visit_all_issues if scrape_issues has not yet been called.
-    Assert that program returns proper alert message.
-    """
-    web_driver = web_utils.WebUtils()
-    with patch('sys.stdout', new=StringIO()) as fake_out:
-      web_driver.visit_all_issues()
-      assert "ERROR: Buganizer has not gathered issues and is attempting "\
-        "to visit them." in fake_out.getvalue()
 
 if __name__ == '__main__':
   unittest.main()

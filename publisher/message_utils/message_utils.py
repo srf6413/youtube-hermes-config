@@ -21,7 +21,7 @@ class MessageUtils():
       current_user = user_comment.find("span", "bv2-event-user-id")['data-hovercard-id']
       if current_user == reporter:
         comment_text_tag = user_comment.find("b-plain-format-unquoted-section",
-                           "ng-star-inserted")
+                                             "ng-star-inserted")
         if comment_text_tag is not None:
           comment = comment_text_tag.get_text(separator='\n')
           self.generate_message(reporter, comment)
@@ -43,24 +43,15 @@ class MessageUtils():
 
     if config_change_type == "EnqueueRule":
       config_change_type = config_change_request.EnqueueRule(reporter, config_change_type)
-      context = config_change_request.Context(config_change_type)
-      template_complete = context.prepare_for_publish(template)
-
-      if template_complete:
-        context.pub()
     elif config_change_type == "RoutingRule":
       config_change_type = config_change_request.RoutingRule(reporter, config_change_type)
-      context = config_change_request.Context(config_change_type)
-      template_complete = context.prepare_for_publish(template)
-
-      if template_complete:
-        context.pub()
     elif config_change_type == "QueueInfo":
       config_change_type = config_change_request.QueueInfo(reporter, config_change_type)
-      context = config_change_request.Context(config_change_type)
-      template_complete = context.prepare_for_publish(template)
-
-      if template_complete:
-        context.pub()
     else:
       return
+
+    context = config_change_request.Context(config_change_type)
+    template_complete = context.prepare_for_publish(template)
+
+    if template_complete is not None:
+      context.pub()

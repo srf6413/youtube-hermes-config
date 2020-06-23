@@ -17,9 +17,9 @@ class System():
     Args:
       url (str): the Buganizer url to scrape
     """
-    success = self._web_util.scrape_issues(url)
-    if success:
-      self._web_util.visit_all_issues()
+    issues = self._web_util.scrape_issues(url)
+    if len(issues) > 0:
+      self._web_util.visit_all_issues(issues)
 
 if __name__ == "__main__":
   system = System()
