@@ -52,7 +52,7 @@ credentials for applications.
  
 
         $ cd publisher/config_change_request
-        $ protoc -I=. --python_out=. ./config_type.proto
+        $ protoc -I=. --python_out=. ./config_change.proto
 
 
 
