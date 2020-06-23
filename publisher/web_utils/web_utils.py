@@ -95,9 +95,13 @@ class WebUtils():
     return buganizer_issues
 
   def visit_all_issues(self, issues):
-    """From the list of buganizer issues, visit each issue and
+    """
+    From the list of buganizer issues, visit each issue and
         send to message_utils to be parsed.
-        """
+        
+    Args:
+            issues (list): the Buganizer urls to scrape 
+    """
     for issue in issues:
       reporter = "empty"
       self._driver.get(issue)
