@@ -19,21 +19,13 @@
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 #include "config_type.pb.h"
 
-namespace yoututbe {
-namespace hermes {
-namespace config {
-namespace cppsubscriber {
+namespace youtube_hermes_config_subscriber {
 
-MockMessage::MockMessage(ConfigChangeRequest config) {
-  std::string parsed;
-  config.SerializeToString(&parsed);
-  this->data_ = parsed;
+MockMessage::MockMessage(ConfigChangeRequest const& config) {
+  config.SerializeToString(&data_);
 }
 std::string MockMessage::data() const {
   return data_;
 }
 
-}  // namespace cppsubscriber
-}  // namespace config
-}  // namespace hermes
-}  // namespace yoututbe
+}  // namespace youtube_hermes_config_subscriber

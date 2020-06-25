@@ -21,13 +21,11 @@
 #include <string>
 #include <thread>
 
+#include "absl/strings/string_view.h"
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 #include "processor.h"
 
-namespace yoututbe {
-namespace hermes {
-namespace config {
-namespace cppsubscriber {
+namespace youtube_hermes_config_subscriber {
 
 std::string Client::get_pubsub_subscription_link() {
   return pubsub_subscription_link_;
@@ -38,8 +36,7 @@ std::string Client::get_pubsub_subscription_link() {
 void Client::Run(MessageCallback callback) {
   if (!is_running_) {
     this->is_running_ = true;
-    std::thread* running_thread = new std::thread(&Client::RunThreadFunction, this, callback);
-    this->thread_ = running_thread;
+    this->thread_ = std::unique_ptr<std::thread>(new std::thread(&Client::RunThreadFunction, this, callback));
   }
 }
 
@@ -50,23 +47,25 @@ void Client::RunThreadFunction(MessageCallback callback) {
   using google::pubsub::v1::Subscriber;
   using grpc::ClientContext;
 
-  std::cout << "running RunThreadFunction" << std::endl;
+  std::cout << "Running client RunThreadFunction." << std::endl;
 
   auto credentials = grpc::GoogleDefaultCredentials();
   auto channel = grpc::CreateChannel("pubsub.googleapis.com", credentials);
   std::unique_ptr<Subscriber::Stub> stub(Subscriber::NewStub(channel));
 
-  //keep alive for duration of machines life
   while (this->is_running_) {
     std::this_thread::sleep_for(std::chrono::seconds(10));
+
     // Open stream.
     ClientContext context;
-    auto stream(stub->StreamingPull(&context));
-    // connect stream to pubsub subscription
+    std::unique_ptr<::grpc::ClientReaderWriterInterface<::google::pubsub::v1::StreamingPullRequest, ::google::pubsub::v1::StreamingPullResponse>> stream(stub->StreamingPull(&context));
+
+    // Connect stream to pubsub subscription
     StreamingPullRequest request;
     request.set_subscription(this->pubsub_subscription_link_);
     request.set_stream_ack_deadline_seconds(10);
-    // poll for messages.
+
+    // Poll for messages.
     StreamingPullResponse response;
     stream->Write(request);
 
@@ -74,17 +73,15 @@ void Client::RunThreadFunction(MessageCallback callback) {
       StreamingPullRequest ack_request;
       for (const ReceivedMessage& message : response.received_messages()) {
         ack_request.add_ack_ids(message.ack_id());
-        bool hasMessage = message.has_message();
-        if (hasMessage) {
-          //pass message to callback
+        if (message.has_message()) {
           callback(message.message());
         }
       }
-      // acknowledged messages.
+      // Acknowledged messages.
       stream->Write(ack_request);
     }
   }  // while (is_running) loop
-  std::cout << "stopping client RunThreadFunction" << std::endl;
+  std::cout << "Stopping client RunThreadFunction." << std::endl;
 }
 
 void Client::Stop() {
@@ -92,7 +89,7 @@ void Client::Stop() {
 }
 
 void Client::JoinThread() {
-  if (this->thread_ != nullptr) {
+  if (thread_) {
     thread_->join();
   }
 }
@@ -101,7 +98,4 @@ bool Client::IsRunning() {
   return is_running_;
 }
 
-}  // namespace cppsubscriber
-}  // namespace config
-}  // namespace hermes
-}  // namespace yoututbe
+}  // namespace youtube_hermes_config_subscriber

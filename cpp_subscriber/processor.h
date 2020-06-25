@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef YOUTUBE_HERMES_CONFIG_CPPSUBSCRIBER_PROCESSOR_H
-#define YOUTUBE_HERMES_CONFIG_CPPSUBSCRIBER_PROCESSOR_H
+#ifndef YOUTUBE_HERMES_CONFIG_SUBSCRIBER_PROCESSOR_H
+#define YOUTUBE_HERMES_CONFIG_SUBSCRIBER_PROCESSOR_H
+
+#include <google/protobuf/stubs/statusor.h>
 
 #include <sstream>
 #include <string>
@@ -23,20 +25,17 @@
 #include "config_type.pb.h"
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 
-namespace yoututbe {
-namespace hermes {
-namespace config {
-namespace cppsubscriber {
+namespace youtube_hermes_config_subscriber {
 
-typedef ConfigChangeRequest* MessageCallback(google::pubsub::v1::PubsubMessage const&);
+typedef google::protobuf::util::StatusOr<ConfigChangeRequest> MessageCallback(google::pubsub::v1::PubsubMessage const&);
 
 // Constants used for logging data in MessageProcessor function
-const std::string kInvalidConfigurationWarning = "Invalid ConfigChangeRequest Object. ConfigChangeRequest must have oneof (enqueue_rule, routing_rule, queue_info)";
-const std::string kParsingFailedWarning = "Failed to parse ConfigChangeRequest Object from String";
-const std::string kSuccessfulParsingMessage = "Successfully parsed ConfigChangeRequest from message";
-const std::string kEnqueueRuleHeader = "-- Enqueue Rule --";
-const std::string kRoutingRuleHeader = "-- Routing Rule --";
-const std::string kQueueInfoHeader = "-- Queue Info --";
+const char* kInvalidConfigurationWarning = "Invalid ConfigChangeRequest Object. ConfigChangeRequest must have oneof (enqueue_rule, routing_rule, queue_info)";
+const char* kParsingFailedWarning = "Failed to parse ConfigChangeRequest Object from String";
+const char* kSuccessfulParsingMessage = "Successfully parsed ConfigChangeRequest from message";
+const char* kEnqueueRuleHeader = "-- Enqueue Rule --";
+const char* kRoutingRuleHeader = "-- Routing Rule --";
+const char* kQueueInfoHeader = "-- Queue Info --";
 
 // MessageProcessor Templated function
 // Message class should be a `MockMessage` or `google::pubsub::v1::PubsubMessage`
@@ -44,57 +43,51 @@ const std::string kQueueInfoHeader = "-- Queue Info --";
 // and return the deserialized message object wrapped in a ConfigChangeRequest object 
 // If Parsing the ConfigChangeRequest object then a nullptr will be returned
 template <class Message>
-ConfigChangeRequest* MessageProcessor(Message const& message) {
+google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message const& message) {
   using google::protobuf::Map;
-  using std::cout;
-  using std::endl;
-  using std::string;
-  using std::vector;
+  using google::protobuf::util::StatusOr;
+  using google::protobuf::util::Status;
+  using google::protobuf::util::error::Code;
 
-  ConfigChangeRequest* config_change_request = new ConfigChangeRequest();
-  bool parsed_succesfully = config_change_request->ParseFromString(message.data());
+  ConfigChangeRequest config_change_request;
+  bool parsed_succesfully = config_change_request.ParseFromString(message.data());
 
   // If parsing failed, log error and return nullptr
   if (!parsed_succesfully) {
-    cout << endl << kParsingFailedWarning << endl;
-    cout << "message.data(): " << message.data() << endl;
-    delete config_change_request;
-    return nullptr;
+    std::cout << std::endl << kParsingFailedWarning << std::endl;
+    std::cout << "message.data(): " << message.data() << std::endl;
+    return Status(Code::INVALID_ARGUMENT, kParsingFailedWarning);
   }
 
-  cout << endl << kSuccessfulParsingMessage << endl;
+  std::cout << std::endl << kSuccessfulParsingMessage << std::endl;
   
-  if (config_change_request->has_enqueue_rule()) {
+  if (config_change_request.has_enqueue_rule()) {
     // log each EnqueueRule
-    cout << kEnqueueRuleHeader << endl;
-    for (int i = 0; i < config_change_request->enqueue_rule().changes_size(); ++i) {
-      cout << config_change_request->enqueue_rule().changes(i).DebugString() << endl;
+    std::cout << kEnqueueRuleHeader << std::endl;
+    for (const auto& change : config_change_request.enqueue_rule().changes()) {
+      std::cout << change.DebugString() << std::endl;
     }
-  } else if (config_change_request->has_routing_rule()) {
+  } else if (config_change_request.has_routing_rule()) {
     // log each RoutingRule
-    cout << kRoutingRuleHeader << endl;
-    for (int i = 0; i < config_change_request->routing_rule().changes_size(); ++i) {
-      cout << config_change_request->routing_rule().changes(i).DebugString() << endl;
+    std::cout << kRoutingRuleHeader << std::endl;
+    for (const auto& change : config_change_request.routing_rule().changes()) {
+      std::cout << change.DebugString() << std::endl;
     }
-  } else if (config_change_request->has_queue_info()) {
+  } else if (config_change_request.has_queue_info()) {
     // log each QueueInfo
-    cout << kQueueInfoHeader << endl;
-    for (int i = 0; i < config_change_request->queue_info().changes_size(); ++i) {
-      cout << config_change_request->queue_info().changes(i).DebugString() << endl;
+    std::cout << kQueueInfoHeader << std::endl;
+    for (const auto& change : config_change_request.queue_info().changes()) {
+      std::cout << change.DebugString() << std::endl;
     }
   } else {
     // log Invalid Configuration Warning
-    cout << kInvalidConfigurationWarning << endl;
-    delete config_change_request;
-    return nullptr;
+    std::cout << kInvalidConfigurationWarning << std::endl;
+    return Status(Code::INVALID_ARGUMENT, kInvalidConfigurationWarning);
   }
   
   return config_change_request;
 }
 
-}  // namespace cppsubscriber
-}  // namespace config
-}  // namespace hermes
-}  // namespace yoututbe
+}  // namespace youtube_hermes_config_subscriber
 
-#endif  // YOUTUBE_HERMES_CONFIG_CPPSUBSCRIBER_PROCESSOR_H
+#endif  // YOUTUBE_HERMES_CONFIG_SUBSCRIBER_PROCESSOR_H

@@ -31,11 +31,8 @@ http_archive(
 # Load indirect dependencies due to
 #     https://github.com/bazelbuild/bazel/issues/1943
 load("@com_github_googleapis_google_cloud_cpp//bazel:google_cloud_cpp_deps.bzl", "google_cloud_cpp_deps")
-
 google_cloud_cpp_deps()
-
 load("@com_google_googleapis//:repository_rules.bzl", "switched_rules_by_language")
-
 switched_rules_by_language(
     name = "com_google_googleapis_imports",
     cc = True,
@@ -43,21 +40,9 @@ switched_rules_by_language(
 )
 
 load("@com_github_grpc_grpc//bazel:grpc_deps.bzl", "grpc_deps")
-
 grpc_deps()
-
 load("@com_github_grpc_grpc//bazel:grpc_extra_deps.bzl", "grpc_extra_deps")
-
 grpc_extra_deps()
-
-# http_archive(
-#     name = "googletest",
-#     url = "https://github.com/google/googletest/archive/release-1.7.0.zip",
-#     sha256 = "b58cb7547a28b2c718d1e38aee18a3659c9e3ff52440297e965f5edffe34b6d0",
-#     build_file = "@//:gtest.BUILD",
-#     strip_prefix = "googletest-release-1.7.0",
-# )
-
 load("@bazel_tools//tools/build_defs/repo:git.bzl", "git_repository")
 
 git_repository(
@@ -66,8 +51,6 @@ git_repository(
 	# commit = "2fe3bd994b3189899d93f1d5a881e725e046fdc2", shallow_since = "1535728917 -0400"
     tag = "release-1.10.0",
 )
-
-
 
 # rules_cc defines rules for generating C++ code from Protocol Buffers.
 http_archive(

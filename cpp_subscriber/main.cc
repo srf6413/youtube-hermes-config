@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "absl/memory/memory.h"
+#include "absl/strings/string_view.h"
 #include "client.h"
 #include "config_type.pb.h"
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
@@ -26,34 +27,25 @@
 #include "mock_message.h"
 #include "processor.h"
 
-void Debug();
-void Start();
+const absl::string_view kSubscriptionsLink = "projects/google.com:youtube-admin-pacing-server/subscriptions/CppBinary";
+const int kSecondsToKeepClientAlive = 1200;
 
 int main() {
-  Start();
-  // Debug();
-}
 
-// Creates a Client that polls pubsub and Runs it 
-// passing the MessageProcessor function as a callback
-void Start() {
+  // Creates a Client that polls pubsub and Runs it 
+  // passing the MessageProcessor function as a callback
   using google::pubsub::v1::PubsubMessage;
-  using yoututbe::hermes::config::cppsubscriber::Client;
-  using yoututbe::hermes::config::cppsubscriber::MessageProcessor;
-  std::string link = "projects/google.com:youtube-admin-pacing-server/subscriptions/CppBinary";
+  using youtube_hermes_config_subscriber::Client;
+  using youtube_hermes_config_subscriber::MessageProcessor;
 
-  Client *client = new Client(link);
-  client->Run(MessageProcessor<PubsubMessage>);
-
-  // Keep the program alive for atleast 5 minutes
-  std::this_thread::sleep_for(std::chrono::seconds(60 * 5));
+  Client client = Client(kSubscriptionsLink);
+  client.Run(MessageProcessor<PubsubMessage>);
+  std::this_thread::sleep_for(std::chrono::seconds(kSecondsToKeepClientAlive));
 
   // Currently it takes around 30 seconds for the stream object in the client 
   // to close after calling this Stop method
-  client->Stop();
+  client.Stop();
   
-  client->JoinThread();
+  client.JoinThread();
   std::cout << "Program Terminating" << std::endl;
 }
-
-void Debug() {}

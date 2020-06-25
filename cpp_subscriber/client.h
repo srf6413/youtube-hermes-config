@@ -12,18 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef YOUTUBE_HERMES_CONFIG_CPPSUBSCRIBER_CLIENT_H
-#define YOUTUBE_HERMES_CONFIG_CPPSUBSCRIBER_CLIENT_H
+#ifndef YOUTUBE_HERMES_CONFIG_SUBSCRIBER_CLIENT_H
+#define YOUTUBE_HERMES_CONFIG_SUBSCRIBER_CLIENT_H
 
 #include <string>
 #include <thread>
 
-#include "processor.h"
+#include "absl/strings/string_view.h"
 
-namespace yoututbe {
-namespace hermes {
-namespace config {
-namespace cppsubscriber {
+#include "processor.h"
+namespace youtube_hermes_config_subscriber {
 
 class Client {
  public:
@@ -35,7 +33,7 @@ class Client {
    * callback that will be triggered when the subscription received a new
    * published method
    */
-  explicit Client(std::string pubsub_subscription_link)
+  explicit Client(absl::string_view pubsub_subscription_link)
       : is_running_(false), pubsub_subscription_link_(pubsub_subscription_link) {}
 
   /// No default construction. Use `Client(std::string pubsub_subscription_link)`
@@ -83,7 +81,8 @@ class Client {
 
  private:
   bool is_running_;
-  std::thread* thread_;
+  // std::thread* thread_;
+  std::unique_ptr<std::thread> thread_;
   std::string pubsub_subscription_link_;
 
   /**
@@ -95,9 +94,6 @@ class Client {
   void RunThreadFunction(MessageCallback);// callback);
 };
 
-}  // namespace cppsubscriber
-}  // namespace config
-}  // namespace hermes
-}  // namespace yoututbe
+}  // namespace youtube_hermes_config_subscriber
 
-#endif  // YOUTUBE_HERMES_CONFIG_CPPSUBSCRIBER_CLIENT_H
+#endif  // YOUTUBE_HERMES_CONFIG_SUBSCRIBER_CLIENT_H

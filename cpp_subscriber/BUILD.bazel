@@ -32,7 +32,7 @@ proto_library(
 
 cc_library(
   name = "subscriber-lib",
-  srcs = ["client.cc", "processor.cc", "mock_message.cc"],
+  srcs = ["client.cc", "mock_message.cc"],
   hdrs = ["client.h", "processor.h", "mock_message.h"],
   deps = [
     "@com_github_grpc_grpc//:grpc++",
@@ -47,7 +47,7 @@ cc_library(
 cc_test(
   name = "unit_test",
   srcs = [
-      "tests.cc",
+      "processor_tests.cc",
   ],
   deps = [
     "@googletest//:gtest_main",
@@ -65,7 +65,3 @@ cc_binary(
     ":config_type_cc_proto"
   ],
 )
-
-
-# "@com_github_googleapis_google_cloud_cpp//:bigtable_client",
-# "@com_github_googleapis_google_cloud_cpp//google/cloud/pubsub:pubsub_client",

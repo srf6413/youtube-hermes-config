@@ -12,22 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef YOUTUBE_HERMES_CONFIG_CPPSUBSCRIBER_MOCKMESSAGE_H
-#define YOUTUBE_HERMES_CONFIG_CPPSUBSCRIBER_MOCKMESSAGE_H
+#ifndef YOUTUBE_HERMES_CONFIG_SUBSCRIBER_MOCKMESSAGE_H
+#define YOUTUBE_HERMES_CONFIG_SUBSCRIBER_MOCKMESSAGE_H
 
 #include <string>
 
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 #include "config_type.pb.h"
 
-namespace yoututbe {
-namespace hermes {
-namespace config {
-namespace cppsubscriber {
+namespace youtube_hermes_config_subscriber {
 
 class MockMessage {
  public:
-  MockMessage(ConfigChangeRequest config_change_request);
+  explicit MockMessage(ConfigChangeRequest const& config_change_request);
   MockMessage() = delete;
 
   std::string data() const;
@@ -36,9 +33,6 @@ class MockMessage {
   std::string data_;
 };
 
-}  // namespace cppsubscriber
-}  // namespace config
-}  // namespace hermes
-}  // namespace yoututbe
+}  // namespace youtube_hermes_config_subscriber
 
-#endif  // YOUTUBE_HERMES_CONFIG_CPPSUBSCRIBER_MOCKMESSAGE_H
+#endif  // YOUTUBE_HERMES_CONFIG_SUBSCRIBER_MOCKMESSAGE_H
