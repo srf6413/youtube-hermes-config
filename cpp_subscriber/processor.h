@@ -24,24 +24,24 @@
 
 #include "config_type.pb.h"
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
+#include "absl/strings/string_view.h"
 
 namespace youtube_hermes_config_subscriber {
 
 typedef google::protobuf::util::StatusOr<ConfigChangeRequest> MessageCallback(google::pubsub::v1::PubsubMessage const&);
 
-// Constants used for logging data in MessageProcessor function
-const char* kInvalidConfigurationWarning = "Invalid ConfigChangeRequest Object. ConfigChangeRequest must have oneof (enqueue_rule, routing_rule, queue_info)";
-const char* kParsingFailedWarning = "Failed to parse ConfigChangeRequest Object from String";
-const char* kSuccessfulParsingMessage = "Successfully parsed ConfigChangeRequest from message";
-const char* kEnqueueRuleHeader = "-- Enqueue Rule --";
-const char* kRoutingRuleHeader = "-- Routing Rule --";
-const char* kQueueInfoHeader = "-- Queue Info --";
+// Constants used for logging data in MessageProcessor function.
+const char kInvalidConfigurationWarning[] = "Invalid ConfigChangeRequest Object. ConfigChangeRequest must have oneof (enqueue_rule, routing_rule, queue_info)";
+const char kParsingFailedWarning[] = "Failed to parse ConfigChangeRequest Object from String";
+const char kSuccessfulParsingMessage[] = "Successfully parsed ConfigChangeRequest from message";
+const char kEnqueueRuleHeader[] = "-- Enqueue Rule --";
+const char kRoutingRuleHeader[] = "-- Routing Rule --";
+const char kQueueInfoHeader[] = "-- Queue Info --";
 
-// MessageProcessor Templated function
-// Message class should be a `MockMessage` or `google::pubsub::v1::PubsubMessage`
-// This function logs the contents of message if there is a valid config_type
-// and return the deserialized message object wrapped in a ConfigChangeRequest object 
-// If Parsing the ConfigChangeRequest object then a nullptr will be returned
+// MessageProcessor Templated function.
+// Message class should be a `MockMessage` or `google::pubsub::v1::PubsubMessage`.
+// This function logs the contents of message if
+// and return the deserialized message object.
 template <class Message>
 google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message const& message) {
   using google::protobuf::Map;
@@ -52,7 +52,7 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
   ConfigChangeRequest config_change_request;
   bool parsed_succesfully = config_change_request.ParseFromString(message.data());
 
-  // If parsing failed, log error and return nullptr
+  // If parsing fails log error and a Invalid status
   if (!parsed_succesfully) {
     std::cout << std::endl << kParsingFailedWarning << std::endl;
     std::cout << "message.data(): " << message.data() << std::endl;
@@ -62,25 +62,25 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
   std::cout << std::endl << kSuccessfulParsingMessage << std::endl;
   
   if (config_change_request.has_enqueue_rule()) {
-    // log each EnqueueRule
+    // Log each EnqueueRule.
     std::cout << kEnqueueRuleHeader << std::endl;
     for (const auto& change : config_change_request.enqueue_rule().changes()) {
       std::cout << change.DebugString() << std::endl;
     }
   } else if (config_change_request.has_routing_rule()) {
-    // log each RoutingRule
+    // Log each RoutingRule.
     std::cout << kRoutingRuleHeader << std::endl;
     for (const auto& change : config_change_request.routing_rule().changes()) {
       std::cout << change.DebugString() << std::endl;
     }
   } else if (config_change_request.has_queue_info()) {
-    // log each QueueInfo
+    // Log each QueueInfo.
     std::cout << kQueueInfoHeader << std::endl;
     for (const auto& change : config_change_request.queue_info().changes()) {
       std::cout << change.DebugString() << std::endl;
     }
   } else {
-    // log Invalid Configuration Warning
+    // Log Invalid Configuration Warning.
     std::cout << kInvalidConfigurationWarning << std::endl;
     return Status(Code::INVALID_ARGUMENT, kInvalidConfigurationWarning);
   }

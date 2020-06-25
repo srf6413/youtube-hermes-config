@@ -31,12 +31,11 @@ std::string Client::get_pubsub_subscription_link() {
   return pubsub_subscription_link_;
 }
 
-//TODO(ballah):decide how to handle edge case where run is called twice.
 //Currently any call to this method when the client is already running is ignored.
 void Client::Run(MessageCallback callback) {
   if (!is_running_) {
     this->is_running_ = true;
-    this->thread_ = std::unique_ptr<std::thread>(new std::thread(&Client::RunThreadFunction, this, callback));
+    this->thread_ = std::make_unique<std::thread>(&Client::RunThreadFunction, this, callback);
   }
 }
 
@@ -56,11 +55,11 @@ void Client::RunThreadFunction(MessageCallback callback) {
   while (this->is_running_) {
     std::this_thread::sleep_for(std::chrono::seconds(10));
 
-    // Open stream.
+    // Open the stream.
     ClientContext context;
     std::unique_ptr<::grpc::ClientReaderWriterInterface<::google::pubsub::v1::StreamingPullRequest, ::google::pubsub::v1::StreamingPullResponse>> stream(stub->StreamingPull(&context));
 
-    // Connect stream to pubsub subscription
+    // Connect stream to pubsub subscription.
     StreamingPullRequest request;
     request.set_subscription(this->pubsub_subscription_link_);
     request.set_stream_ack_deadline_seconds(10);

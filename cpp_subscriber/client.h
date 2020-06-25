@@ -31,7 +31,7 @@ class Client {
    *
    * See `Run(MessageCallback callback)` for how to start client, and pass a 
    * callback that will be triggered when the subscription received a new
-   * published method
+   * published method.
    */
   explicit Client(absl::string_view pubsub_subscription_link)
       : is_running_(false), pubsub_subscription_link_(pubsub_subscription_link) {}
@@ -39,10 +39,8 @@ class Client {
   /// No default construction. Use `Client(std::string pubsub_subscription_link)`
   Client() = delete;
 
-  //TODO(isaiah): look into / re-read style guide on defining if a class is "copyable and movable"
-
   /**
-   * returns the link to the pubsub subscription the client connects to
+   * Returns the link to the pubsub subscription the client connects to.
   */
   std::string get_pubsub_subscription_link();
 
@@ -51,29 +49,30 @@ class Client {
    * a new thread. Sets is_running_ to true, and sets *thread_ to point to the thread 
    * that was created.
    * 
-   * If called when is_running_ is already true then the method returns without
+   * If called when is_running_ equals true, then the method returns without
    * doing anything.
   */
   void Run(MessageCallback);// callback);
 
   /**
    * If the client is running then this function will cause the thread that called
-   * this method to wait until the thread running the client is finished running
+   * this method to wait until the thread running the client is finished running.
    * 
    * This does not happen immediatly after `Stop()` is called, as thread_ does not
    * terminate immediatly, it terminates once the stream object created in
    * `void RunThreadFunction(MessageCallback callback)` naturally closes
    * which happens around 30 seconds after not receiveing any messages from the
-   * pubsub subscription 
+   * pubsub subscription .
   */
   void JoinThread();
 
   /**
    * If the client is running then sets is_running_ to false which will prevent
-   * the thread thats is running the pubsub subscriber from staying alive
+   * the thread thats is running the pubsub subscriber from staying alive.
    * 
    * If called when is_running_ is already false then the method 
    * returns without doing anything.
+   * 
   */
   void Stop();
 
