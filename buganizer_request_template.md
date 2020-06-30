@@ -23,6 +23,7 @@ Method: <TypeOfMethod>
 QueueId: <QueueId>
 ```
 \<TypeOfMethod> must be one of: Add, Set, or Remove
+
 <br><br>
 The QueueId specifies which queue the change is being applied to.
 
@@ -62,6 +63,7 @@ Method: Add
 QueueId: 2
 Features: f6, f11
 Priority: 1
+
 ```
 <br><br>
 
