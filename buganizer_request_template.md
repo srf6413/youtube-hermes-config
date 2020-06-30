@@ -22,7 +22,8 @@ Configuration: <TypeOfChange>
 Method: <TypeOfMethod>
 QueueId: <QueueId>
 ```
-\<TypeOfMethod> must be one of: EnqueueRule, RoutingRule, or QueueInfo
+\<TypeOfMethod> must be one of: Add, Set, or Remove
+
 <br><br>
 The QueueId specifies which queue the change is being applied to.
 
@@ -37,7 +38,7 @@ Below are Templates for each type of change with examples.
 ```html
 Configuration: EnqueueRule
 
-Method: <Add> or <Remove>
+Method: <Set> or <Add> or <Remove>
 QueueId: <QueueId>
 Features: <Feature>, <Feature>, <Feature>, ...
 Priority: <PriorityNumber>
@@ -49,19 +50,20 @@ Priority: <PriorityNumber>
 Configuration: EnqueueRule
 
 Method: Add
-QueueId: 3
+QueueId: 1
 Features: f1, f2, f3, f4
 Priority: 5
 
-Method: Add
-QueueId: 3
-Features: f5, f7, f10
-Priority: 3
-
 Method: Remove
-QueueId: 3
-Features: f6, f11
+QueueId: 1
+Features: f5, f7
 Priority: 0
+
+Method: Add
+QueueId: 2
+Features: f6, f11
+Priority: 1
+
 ```
 <br><br>
 
@@ -71,7 +73,7 @@ Priority: 0
 ```html
 Configuration: RoutingRule
 
-Method: <Add> or <Remove>
+Method: <Set> or <Add> or <Remove>
 QueueId: <QueueId>
 Possible-Routes: <QueueId>, <QueueId>, <QueueId>, ...
 ```
@@ -85,8 +87,8 @@ Method: Add
 QueueId: 1
 Possible-Routes: 2, 3, 4, 5, 6
 
-Method: Remove
-QueueId: 1
+Method: Set
+QueueId: 2
 Possible-Routes: 7
 ```
 <br><br>
@@ -97,7 +99,7 @@ Possible-Routes: 7
 ```html
 Configuration: QueueInfo
 
-Method: <Add> or <Remove>
+Method: <Set> or <Add> or <Remove>
 QueueId: <QueueId>
 Owners: <OwnerEmail>, <OwnerEmail>, <OwnerEmail>, ...
 ```
