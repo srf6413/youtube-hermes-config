@@ -1,79 +1,46 @@
 """This module is responsible for creating and publishing Protocol Buffer Objects via Pub/Sub
 messages according to the configuration change request type specified in the template
 submitted by the reporter of the Buganizer issue. It holds the Context, ConfigurationTypes,
-EnqueueRule, RoutingRule, and QueueInfo classes and uses the strategy design pattern.
+EnqueueRule, RoutingRule, and QueueInfo classes and uses the factory design pattern.
 """
+from datetime import datetime
 from google.cloud import pubsub_v1
-import constants
-from config_change_request import config_change_pb2
+from publisher import constants
+from publisher.config_change_request import config_change_pb2
 
-class Context:
-  """Accepts a strategy in order to parse and publish a template.
+class ConfigurationTypeFactory():
+  """The Facory for making the different types of configurations
+  (EnqueueRule, RoutingRule, QueueInfo)
   """
-  def __init__(self, strategy):
-    self._strategy = strategy
 
-  def prepare_for_publish(self, template):
-    """Use the selected strategy to attempt to parse the template.
+  def __init__(self, reporter, config_change_type, issue, comment):
+    """Initialize the ConfigurationTypeFactory
 
     Args:
-      template (str): the reporters comment of the configuration template
-
-    Returns:
-      bool: True if the comment was in valid template format. False if not.
+        reporter (str): the reporter of the current Buganizer issue
+        config_change_type (str): the type of configuraiton (EnqueueRule, RoutingRule, QueueInfo)
+        issue (str): the URL of the current Buganizer issue
+        comment (str): the reporter's comment on the current Buganizer issue
     """
-    return self._strategy.parse_template(template)
-
-  def pub(self):
-    """Publish using whatever strategy is selected.
-    """
-    self._strategy.publish()
-
-class ConfigurationTypes():
-  """The parent class of the types of configurations(EnqueueRule, RoutingRule, QueueInfo)"""
-
-  def __init__(self, reporter, config_change_type):
     self.config_change_type = config_change_type
     self.config_change_request = config_change_pb2.ConfigChangeRequest()
     self.config_change_request.reporter = reporter
+    self.issue = issue
+    self.comment = comment
 
-  def get_callback(self, api_future, data, ref):
-    """Wrap message data in the context of the callback function."""
-    def callback(api_future):
-        try:
-            print("Published message with type {}. Message ID: {}".format(self.config_change_type,\
-              api_future.result()))
-            ref["num_messages"] += 1
-        except Exception:
-            print("A problem occured when publishing {}: {}\n".format(data, api_future.exception()))
-            raise
-    return callback
-
-  def publish(self):
-    """Publish a message to a Pub/Sub topic.
-    """
-    client = pubsub_v1.PublisherClient()
-    topic_path = client.topic_path(constants.PROJECT_ID, constants.TOPIC_NAME)
-    ref = dict({"num_messages": 0})
-    data = self.config_change_request.SerializeToString()
-    api_future = client.publish(topic_path, data=data)
-    api_future.add_done_callback(self.get_callback(api_future, data, ref))
-
-class EnqueueRule(ConfigurationTypes):
-  """Defines how EnqueueRule templates should be parsed"""
-
-  def parse_template(self, template):
-    """Parses the template into a Protocol Buffer object that will
+  def make_enqueue_rule(self, template):
+    """Parses the template into a ConfigChangeRequest object that will
      be ready to send, given it is valid.
 
     Args:
       template (str): the reporters comment of the configuration template
 
     Returns:
-      ConfigChangeRequest: The config change request object containing all changes.
-      None if invalid template.
+      ConfigChangeRequest: The config change request object containing either the complete
+      Proto Buf object or no Proto Buf object and a detailed error message for logging.
 
     """
+    config_change_request = ConfigurationChangeRequest()
     #These keep track of the current line number of each specifier for EnqueueRule.
     #Starts at 1 since the first line is reserved for the Configuration specifier.
     method_specifier_line_number = 1
@@ -87,8 +54,14 @@ class EnqueueRule(ConfigurationTypes):
     features_specifier_length = len(constants.ENQUEUE_RULE_FEATURES_SPECIFIER)
     priority_specifier_length = len(constants.ENQUEUE_RULE_PRIORITY_SPECIFIER)
 
+    #This checks that the template is the correct number of lines long
     if (len(template) - 1) % constants.ENQUEUE_RULE_COMMAND_LINES_COUNT > 0:
-      return None
+      error = str(datetime.now()) + "  The following configuration change request from " + \
+      self.issue + " is invalid. The number of lines does not match for a correct EnqueueRule "\
+        "template. Please check that the format correctly matches template and try again.\n" + \
+      self.comment + "\n"
+      config_change_request.error_message = error
+      return config_change_request
 
     for line_idx in range(1, len(template), constants.ENQUEUE_RULE_COMMAND_LINES_COUNT):
 
@@ -97,19 +70,23 @@ class EnqueueRule(ConfigurationTypes):
                  range(line_idx, line_idx + constants.ENQUEUE_RULE_COMMAND_LINES_COUNT))
 
       change = self.config_change_request.enqueue_rule.Change()
-      try:
-        method_specifier = template[method_specifier_line_number][:method_specifier_length]
-        queue_specifier = template[queue_specifier_line_number][:queue_specifier_length]
-        features_specifier = template[features_specifier_line_number][:features_specifier_length]
-        priority_specifier = template[priority_specifier_line_number][:priority_specifier_length]
 
-        if method_specifier != constants.ENQUEUE_RULE_METHOD_SPECIFIER or queue_specifier != \
-          constants.ENQUEUE_RULE_QUEUE_SPECIFIER or features_specifier != \
-            constants.ENQUEUE_RULE_FEATURES_SPECIFIER or priority_specifier != \
-              constants.ENQUEUE_RULE_PRIORITY_SPECIFIER:
-          return None
-      except Exception:
-        return None
+      method_specifier = template[method_specifier_line_number][:method_specifier_length]
+      queue_specifier = template[queue_specifier_line_number][:queue_specifier_length]
+      features_specifier = template[features_specifier_line_number][:features_specifier_length]
+      priority_specifier = template[priority_specifier_line_number][:priority_specifier_length]
+
+      if method_specifier != constants.ENQUEUE_RULE_METHOD_SPECIFIER or queue_specifier != \
+        constants.ENQUEUE_RULE_QUEUE_SPECIFIER or features_specifier != \
+          constants.ENQUEUE_RULE_FEATURES_SPECIFIER or priority_specifier != \
+            constants.ENQUEUE_RULE_PRIORITY_SPECIFIER:
+        error = str(datetime.now()) + "  The following configuration change request from " + \
+        self.issue + " is invalid. One or more specifiers are not correct for a EnqueueRule "\
+        "template. Please check that the format correctly matches template and try again.\n" + \
+        self.comment + "\n"
+        config_change_request.error_message = error
+        return config_change_request
+
 
       change.method = template[method_specifier_line_number][method_specifier_length:]
       change.queue = template[queue_specifier_line_number][queue_specifier_length:]
@@ -118,22 +95,22 @@ class EnqueueRule(ConfigurationTypes):
       change.priority = int(template[priority_specifier_line_number][priority_specifier_length:])
       self.config_change_request.enqueue_rule.changes.append(change)
 
-    return self.config_change_request
+    config_change_request.proto = self.config_change_request
+    return config_change_request
 
-class RoutingRule(ConfigurationTypes):
-  """Defines how RoutingRule templates should be parsed"""
 
-  def parse_template(self, template):
-    """Parses the template into a Protocol Buffer object that will be ready to send,
+  def make_routing_rule(self, template):
+    """Parses the template into a ConfigChangeRequest object that will be ready to send,
     given it is valid.
 
     Args:
       template (str): the reporters comment of the configuration template
 
     Returns:
-      ConfigChangeRequest: The config change request object containing all changes.
-       None if invalid template.
+      ConfigChangeRequest: The config change request object containing either the complete
+      Proto Buf object or no Proto Buf object and a detailed error message for logging.
     """
+    config_change_request = ConfigurationChangeRequest()
     #These keep track of the current line number of each specifier for RoutingRule.
     #Starts at 1 since the first line is reserved for the Configuration specifier.
     method_specifier_line_number = 1
@@ -145,8 +122,14 @@ class RoutingRule(ConfigurationTypes):
     queue_specifier_length = len(constants.ROUTING_RULE_QUEUE_SPECIFIER)
     possible_routes_specifier_length = len(constants.ROUTING_RULE_POSSIBLE_ROUTES_SPECIFIER)
 
+    #This checks that the template is the correct number of lines long
     if (len(template) - 1) % constants.ROUTING_RULE_COMMAND_LINES_COUNT > 0:
-      return None
+      error = str(datetime.now()) + "  The following configuration change request from " + \
+      self.issue + " is invalid. The number of lines does not match for a correct RoutingRule "\
+      "template. Please check that the format correctly matches template and try again.\n" + \
+      self.comment + "\n"
+      config_change_request.error_message = error
+      return config_change_request
 
     for line_idx in range(1, len(template), constants.ROUTING_RULE_COMMAND_LINES_COUNT):
 
@@ -155,18 +138,21 @@ class RoutingRule(ConfigurationTypes):
                                                      constants.ROUTING_RULE_COMMAND_LINES_COUNT))
 
       change = self.config_change_request.routing_rule.Change()
-      try:
-        method_specifier = template[method_specifier_line_number][:method_specifier_length]
-        queue_specifier = template[queue_specifier_line_number][:queue_specifier_length]
-        possible_routes_specifier = template[possible_routes_specifier_line_number]\
+
+      method_specifier = template[method_specifier_line_number][:method_specifier_length]
+      queue_specifier = template[queue_specifier_line_number][:queue_specifier_length]
+      possible_routes_specifier = template[possible_routes_specifier_line_number]\
       [:possible_routes_specifier_length]
 
-        if method_specifier != constants.ROUTING_RULE_METHOD_SPECIFIER or queue_specifier != \
+      if method_specifier != constants.ROUTING_RULE_METHOD_SPECIFIER or queue_specifier != \
       constants.ROUTING_RULE_QUEUE_SPECIFIER or possible_routes_specifier != \
-        constants.ROUTING_RULE_POSSIBLE_ROUTES_SPECIFIER:
-          return None
-      except Exception:
-        return None
+      constants.ROUTING_RULE_POSSIBLE_ROUTES_SPECIFIER:
+        error = str(datetime.now()) + "  The following configuration change request from " + \
+        self.issue + " is invalid. One or more specifiers are not correct for a RoutingRule "\
+        "template. Please check that the format correctly matches template and try again.\n" + \
+        self.comment + "\n"
+        config_change_request.error_message = error
+        return config_change_request
 
       change.method = template[method_specifier_line_number][method_specifier_length:]
       change.queue = template[queue_specifier_line_number][queue_specifier_length:]
@@ -174,22 +160,21 @@ class RoutingRule(ConfigurationTypes):
      [possible_routes_specifier_length:].split(", "))
       self.config_change_request.routing_rule.changes.append(change)
 
-    return self.config_change_request
+    config_change_request.proto = self.config_change_request
+    return config_change_request
 
-class QueueInfo(ConfigurationTypes):
-  """Defines how QueueInfo templates should be parsed"""
-
-  def parse_template(self, template):
-    """Parses the template into a Protocol Buffer object that will
+  def make_queue_info(self, template):
+    """Parses the template into a ConfigChangeRequest object that will
      be ready to send, given it is valid.
 
     Args:
       template (str): the reporters comment of the configuration template
 
     Returns:
-      ConfigChangeRequest: The config change request object containing all changes.
-       None if invalid template.
+      ConfigChangeRequest: The config change request object containing either the complete
+      Proto Buf object or no Proto Buf object and a detailed error message for logging.
     """
+    config_change_request = ConfigurationChangeRequest()
     #These keep track of the current line number of each specifier for QueueInfo.
     #Starts at 1 since the first line is reserved for the Configuration specifier.
     method_specifier_line_number = 1
@@ -201,8 +186,14 @@ class QueueInfo(ConfigurationTypes):
     queue_specifier_length = len(constants.QUEUE_INFO_QUEUE_SPECIFIER)
     owners_specifier_length = len(constants.QUEUE_INFO_OWNERS_SPECIFIER)
 
+    #This checks that the template is the correct number of lines long
     if (len(template) - 1) % constants.QUEUE_INFO_COMMAND_LINES_COUNT > 0:
-      return None
+      error = str(datetime.now()) + "  The following configuration change request from " + \
+      self.issue + " is invalid. The number of lines does not match for a correct QueueInfo "\
+      "template. Please check that the format correctly matches template and try again.\n" + \
+      self.comment + "\n"
+      config_change_request.error_message = error
+      return config_change_request
 
     for line_idx in range(1, len(template), constants.QUEUE_INFO_COMMAND_LINES_COUNT):
 
@@ -210,17 +201,19 @@ class QueueInfo(ConfigurationTypes):
           range(line_idx, line_idx + constants.QUEUE_INFO_COMMAND_LINES_COUNT))
 
       change = self.config_change_request.queue_info.Change()
-      try:
-        method_specifier = template[method_specifier_line_number][:method_specifier_length]
-        queue_specifier = template[queue_specifier_line_number][:queue_specifier_length]
-        owners_specifier = template[owners_specifier_line_number][:owners_specifier_length]
+      method_specifier = template[method_specifier_line_number][:method_specifier_length]
+      queue_specifier = template[queue_specifier_line_number][:queue_specifier_length]
+      owners_specifier = template[owners_specifier_line_number][:owners_specifier_length]
 
-        if method_specifier != constants.QUEUE_INFO_METHOD_SPECIFIER or queue_specifier != \
+      if method_specifier != constants.QUEUE_INFO_METHOD_SPECIFIER or queue_specifier != \
       constants.QUEUE_INFO_QUEUE_SPECIFIER or owners_specifier != \
-        constants.QUEUE_INFO_OWNERS_SPECIFIER:
-          return None
-      except Exception:
-        return None
+      constants.QUEUE_INFO_OWNERS_SPECIFIER:
+        error = str(datetime.now()) + "  The following configuration change request from " + \
+        self.issue + " is invalid. One or more specifiers are not correct for a QueueInfo "\
+        "template. Please check that the format correctly matches template and try again.\n" + \
+        self.comment + "\n"
+        config_change_request.error_message = error
+        return config_change_request
 
       change.method = template[method_specifier_line_number][method_specifier_length:]
       change.queue = template[queue_specifier_line_number][queue_specifier_length:]
@@ -228,4 +221,21 @@ class QueueInfo(ConfigurationTypes):
         ", "))
       self.config_change_request.queue_info.changes.append(change)
 
-    return self.config_change_request
+    config_change_request.proto = self.config_change_request
+    return config_change_request
+
+  def publish(self, config_change_request):
+    """Publishes a message to a Pub/Sub topic.
+    """
+    client = pubsub_v1.PublisherClient()
+    topic_path = client.topic_path(constants.PROJECT_ID, constants.TOPIC_NAME)
+    data = config_change_request.SerializeToString()
+    client.publish(topic_path, data=data)
+
+class ConfigurationChangeRequest():
+  """A wrapper object to hold configuration change request Proto Buf objects
+  or a error message if neccessary.
+  """
+  def __init__(self):
+    self.proto = None
+    self.error_message = ""

@@ -12,6 +12,7 @@ DRIVER_PATH = "/opt/google/chrome/chromedriver"
 #Path to Chrome profile
 PROFILE_PATH = "/usr/local/google/home/sauloferreira/.config/chrome-remote-desktop/"\
   "chrome-config/google-chrome/Profile 2"
+CONFIGURATION_SPECIFIER = "Configuration: "
 #EnqueueRule
 ENQUEUE_RULE_COMMAND_LINES_COUNT = 4
 ENQUEUE_RULE_METHOD_SPECIFIER = "Method: "

@@ -1,9 +1,7 @@
 """This module holds the System class which completes any necessary setup for scraping.
 """
-import sys
-import constants
-sys.path.insert(1, constants.PROJECT_PATH)
-from web_utils import web_utils
+from publisher import constants
+from publisher.web_utils import web_utils
 
 class System():
   """Completes any necessary setup for scraping."""
@@ -17,9 +15,11 @@ class System():
     Args:
       url (str): the Buganizer url to scrape
     """
-    issues = self._web_util.scrape_issues(url)
-    if len(issues) > 0:
-      self._web_util.visit_all_issues(issues)
+    while True:
+      issues = self._web_util.scrape_issues(url)
+
+      if len(issues) > 0:
+          self._web_util.visit_all_issues(issues)
 
 if __name__ == "__main__":
   system = System()

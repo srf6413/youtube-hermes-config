@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+message ConfigChangeRequest {
+  oneof ConfigType {
+    EnqueueRule enqueue_rule = 1;
+    RoutingRule routing_rule = 2;
+    QueueInfo queue_info = 3;
+  }
+  string reporter = 4;  //Eg. johndoe@google.com
+}
+
+message EnqueueRule {
+  message Change {
+    string method = 1; //’Add’ or ‘Remove’
+    string queue = 2;  //Eg. Q1
+    repeated string features = 3; //Eg. f1
+    int32 priority = 4; //Eg. 1
+  }
+  repeated Change changes = 1;
+}
+
+message RoutingRule {
+  message Change {
+  	string method = 1; //’Add’ or ‘Remove’
+  	string queue = 2; //Eg. Q1
+  	repeated string possible_routes = 3; //Eg. Q2, Q3, Q4
+	}
+  repeated Change changes = 4;
+}
+
+message QueueInfo {
+	message Change {
+  	string method = 1; //‘Add’ or ‘Remove’
+  	string queue = 2; //Eg. Q1
+  	repeated string owners = 3; //Eg. johndoe@google.com
+	}
+  repeated Change changes = 4;
+}
