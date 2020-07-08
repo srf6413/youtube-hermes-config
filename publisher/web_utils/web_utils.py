@@ -5,9 +5,9 @@ import time
 from datetime import datetime
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from publisher.logs.global_logger import logger
-from publisher.message_utils import message_utils
-from publisher import constants
+from logs.global_logger import logger
+from message_utils import message_utils
+import constants
 
 class WebUtils():
   """Responsible for all Buganizer html scraping."""
@@ -55,15 +55,15 @@ class WebUtils():
     buganizer_issues = []
 
     try:
-      self._driver.get(url)
+      self.driver.get(url)
     except Exception:
-      self._driver.close()
+      self.driver.close()
       error_message = str(datetime.now()) + "  ERROR: Failed to reach URL, check "\
       "specified URL in constants.py\n"
       logger.info(error_message)
       return buganizer_issues
 
-    source_html = self._driver.page_source
+    source_html = self.driver.page_source
     soup = BeautifulSoup(source_html, "html.parser")
     page_title = soup.title.string
 
@@ -75,7 +75,7 @@ class WebUtils():
         logger.info(error_message)
 
         while "Buganizer" not in page_title:
-          source_html = self._driver.page_source
+          source_html = self.driver.page_source
           soup = BeautifulSoup(source_html, "html.parser")
           page_title = soup.title.string
           time.sleep(1)
@@ -107,9 +107,9 @@ class WebUtils():
     """
     for issue in issues:
       reporter = "empty"
-      self._driver.get(issue)
+      self.driver.get(issue)
       while "@google.com" not in reporter:
-        source_html = self._driver.page_source
+        source_html = self.driver.page_source
         soup = BeautifulSoup(source_html, "html.parser")
         reporter_tag = soup.find("div", "bv2-issue-metadata-field-inner "\
           "bv2-issue-metadata-field-reporter")

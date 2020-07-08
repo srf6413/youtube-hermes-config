@@ -1,7 +1,7 @@
 """This module holds the System class which completes any necessary setup for scraping.
 """
-from publisher import constants
-from publisher.web_utils import web_utils
+import constants
+from web_utils import web_utils
 
 class System():
   """Completes any necessary setup for scraping."""

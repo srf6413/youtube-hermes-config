@@ -1,9 +1,9 @@
 """This module holds the MessageUtils class which parses the source html and the
 reporters comments on a given issue.
 """
-from publisher import constants
-from publisher.config_change_request import config_change_request
-from publisher.logs.global_logger import logger
+import constants
+from config_change_request import config_change_request
+from logs.global_logger import logger
 
 class MessageUtils():
   """Responsible for parsing the source html and the

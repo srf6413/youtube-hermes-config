@@ -1,6 +1,6 @@
 """Test file for web_utils.py"""
 import unittest
-from publisher.web_utils import web_utils
+from web_utils import web_utils
 
 class TestsWebUtils(unittest.TestCase):
   """Test methods from web_utils.py

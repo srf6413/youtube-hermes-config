@@ -1,6 +1,9 @@
 # Ignore IDE files
 /.vscode/
 
+# Ignore log files
+logs/
+
 # Environments
 .env
 .venv

@@ -5,8 +5,8 @@ EnqueueRule, RoutingRule, and QueueInfo classes and uses the factory design patt
 """
 from datetime import datetime
 from google.cloud import pubsub_v1
-from publisher import constants
-from publisher.config_change_request import config_change_pb2
+import constants
+from config_change_request import config_change_pb2
 
 class ConfigurationTypeFactory():
   """The Facory for making the different types of configurations
