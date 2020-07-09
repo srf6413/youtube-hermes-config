@@ -3,7 +3,6 @@ messages according to the configuration change request type specified in the tem
 submitted by the reporter of the Buganizer issue. It holds the Context, ConfigurationTypes,
 EnqueueRule, RoutingRule, and QueueInfo classes and uses the factory design pattern.
 """
-from datetime import datetime
 from google.cloud import pubsub_v1
 import constants
 from config_change_request import config_change_pb2
@@ -38,7 +37,6 @@ class ConfigurationTypeFactory():
     Returns:
       ConfigChangeRequest: The config change request object containing either the complete
       Proto Buf object or no Proto Buf object and a detailed error message for logging.
-
     """
     config_change_request = ConfigurationChangeRequest()
     #These keep track of the current line number of each specifier for EnqueueRule.
@@ -56,11 +54,11 @@ class ConfigurationTypeFactory():
 
     #This checks that the template is the correct number of lines long
     if (len(template) - 1) % constants.ENQUEUE_RULE_COMMAND_LINES_COUNT > 0:
-      error = str(datetime.now()) + "  The following configuration change request from " + \
+      error_message = "The following configuration change request from " + \
       self.issue + " is invalid. The number of lines does not match for a correct EnqueueRule "\
         "template. Please check that the format correctly matches template and try again.\n" + \
       self.comment + "\n"
-      config_change_request.error_message = error
+      config_change_request.error_message = error_message
       return config_change_request
 
     for line_idx in range(1, len(template), constants.ENQUEUE_RULE_COMMAND_LINES_COUNT):
@@ -80,11 +78,11 @@ class ConfigurationTypeFactory():
         constants.ENQUEUE_RULE_QUEUE_SPECIFIER or features_specifier != \
           constants.ENQUEUE_RULE_FEATURES_SPECIFIER or priority_specifier != \
             constants.ENQUEUE_RULE_PRIORITY_SPECIFIER:
-        error = str(datetime.now()) + "  The following configuration change request from " + \
+        error_message = "The following configuration change request from " + \
         self.issue + " is invalid. One or more specifiers are not correct for a EnqueueRule "\
         "template. Please check that the format correctly matches template and try again.\n" + \
         self.comment + "\n"
-        config_change_request.error_message = error
+        config_change_request.error_message = error_message
         return config_change_request
 
 
@@ -124,11 +122,11 @@ class ConfigurationTypeFactory():
 
     #This checks that the template is the correct number of lines long
     if (len(template) - 1) % constants.ROUTING_RULE_COMMAND_LINES_COUNT > 0:
-      error = str(datetime.now()) + "  The following configuration change request from " + \
+      error_message = "The following configuration change request from " + \
       self.issue + " is invalid. The number of lines does not match for a correct RoutingRule "\
       "template. Please check that the format correctly matches template and try again.\n" + \
       self.comment + "\n"
-      config_change_request.error_message = error
+      config_change_request.error_message = error_message
       return config_change_request
 
     for line_idx in range(1, len(template), constants.ROUTING_RULE_COMMAND_LINES_COUNT):
@@ -147,11 +145,11 @@ class ConfigurationTypeFactory():
       if method_specifier != constants.ROUTING_RULE_METHOD_SPECIFIER or queue_specifier != \
       constants.ROUTING_RULE_QUEUE_SPECIFIER or possible_routes_specifier != \
       constants.ROUTING_RULE_POSSIBLE_ROUTES_SPECIFIER:
-        error = str(datetime.now()) + "  The following configuration change request from " + \
+        error_message = "The following configuration change request from " + \
         self.issue + " is invalid. One or more specifiers are not correct for a RoutingRule "\
         "template. Please check that the format correctly matches template and try again.\n" + \
         self.comment + "\n"
-        config_change_request.error_message = error
+        config_change_request.error_message = error_message
         return config_change_request
 
       change.method = template[method_specifier_line_number][method_specifier_length:]
@@ -188,11 +186,11 @@ class ConfigurationTypeFactory():
 
     #This checks that the template is the correct number of lines long
     if (len(template) - 1) % constants.QUEUE_INFO_COMMAND_LINES_COUNT > 0:
-      error = str(datetime.now()) + "  The following configuration change request from " + \
+      error_message = "The following configuration change request from " + \
       self.issue + " is invalid. The number of lines does not match for a correct QueueInfo "\
       "template. Please check that the format correctly matches template and try again.\n" + \
       self.comment + "\n"
-      config_change_request.error_message = error
+      config_change_request.error_message = error_message
       return config_change_request
 
     for line_idx in range(1, len(template), constants.QUEUE_INFO_COMMAND_LINES_COUNT):
@@ -208,11 +206,11 @@ class ConfigurationTypeFactory():
       if method_specifier != constants.QUEUE_INFO_METHOD_SPECIFIER or queue_specifier != \
       constants.QUEUE_INFO_QUEUE_SPECIFIER or owners_specifier != \
       constants.QUEUE_INFO_OWNERS_SPECIFIER:
-        error = str(datetime.now()) + "  The following configuration change request from " + \
+        error_message = "The following configuration change request from " + \
         self.issue + " is invalid. One or more specifiers are not correct for a QueueInfo "\
         "template. Please check that the format correctly matches template and try again.\n" + \
         self.comment + "\n"
-        config_change_request.error_message = error
+        config_change_request.error_message = error_message
         return config_change_request
 
       change.method = template[method_specifier_line_number][method_specifier_length:]

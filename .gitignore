@@ -35,5 +35,5 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Ignore proto files
-publisher/config_change_request/config_change_pb2.py
+# Ignore proto generated files
+config_change_request/config_change_pb2.py

@@ -1,17 +1,21 @@
-"""This module holds the MessageUtils class which parses the source html and the
+"""This module holds the MessageParsingUtility class which parses the source html and the
 reporters comments on a given issue.
 """
 import constants
-from datetime import datetime
 from config_change_request import config_change_request
-from logs.global_logger import logger
 
-class MessageUtils():
+class MessageParsingUtility():
   """Responsible for parsing the source html and the
   reporters comments on a given issue"""
 
-  def __init__(self):
+  def __init__(self, logger):
+    """Setup the MessageParsingUtility
+
+    Args:
+        logger (logs.logger.Logger): the systems error logger
+    """
     self.issue_comments_counts = {}
+    self.logger = logger
 
   def parse_page(self, soup, reporter, issue):
     """Parses the source html for the reporter and their comments from each
@@ -55,11 +59,11 @@ class MessageUtils():
     config_specifier = template[0][:config_specifier_length]
     config_change_type = template[0][config_specifier_length:]
     if config_specifier != constants.CONFIGURATION_SPECIFIER:
-      error = str(datetime.now()) + "  The following configuration change request from " + \
+      error = "The following configuration change request from " + \
       issue + " is invalid. The configuraiton specifier in the template is not correct. "\
         "Please check that the format correctly matches template and try again.\n" + \
       comment + "\n"
-      logger.error(error)
+      self.logger.log(error)
       return
 
     factory = config_change_request.ConfigurationTypeFactory(reporter, config_change_type,
@@ -71,12 +75,12 @@ class MessageUtils():
     elif config_change_type == "QueueInfo":
       config_change = factory.make_queue_info(template)
     else:
-      error = str(datetime.now()) + "  The following configuration change request from " + \
+      error = "The following configuration change request from " + \
       issue + " is invalid. The configuraiton type specified is not a valid configuration type"\
         "(EnqueueRule, RoutingRule, QueueInfo). Please check that the format correctly matches "\
           "template and try again.\n" + \
       comment + "\n"
-      logger.error(error)
+      self.logger.log(error)
       return
 
     #This means template was valid and ready to send
@@ -84,5 +88,5 @@ class MessageUtils():
       factory.publish(config_change.proto)
     #Otherwise log what the problem with the template was
     else:
-      logger.error(config_change.error_message)
+      self.logger.log(config_change.error_message)
       return

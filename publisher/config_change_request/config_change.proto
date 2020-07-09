@@ -6,33 +6,52 @@ message ConfigChangeRequest {
     RoutingRule routing_rule = 2;
     QueueInfo queue_info = 3;
   }
-  string reporter = 4;  //Eg. johndoe@google.com
+  // The user who filled out the Buganizer request
+  // Eg. johndoe@google.com
+  string reporter = 4;
 }
 
 message EnqueueRule {
   message Change {
-    string method = 1; //’Add’ or ‘Remove’
-    string queue = 2;  //Eg. Q1
+    // The method of the EnqueueRule
+    // ‘Add’ or ‘Remove’
+    string method = 1;
+    // The name of the queue(s) for the EnqueueRule
+    // Eg. Q1, Q2, Q3
+    string queue = 2;
     repeated string features = 3; //Eg. f1
     int32 priority = 4; //Eg. 1
   }
+  //Allows for multiple EnqueueRule operations in one template
   repeated Change changes = 1;
 }
 
 message RoutingRule {
   message Change {
-  	string method = 1; //’Add’ or ‘Remove’
+    // The method of the RoutingRule
+    //‘Add’ or ‘Remove’
+    string method = 1; //’Add’ or ‘Remove’
+    // The name of the queue(s) for the RoutingRule
+    // Eg. Q1, Q2, Q3
   	string queue = 2; //Eg. Q1
   	repeated string possible_routes = 3; //Eg. Q2, Q3, Q4
-	}
+  }
+  //Allows for multiple RoutingRule operations in one template
   repeated Change changes = 4;
 }
 
 message QueueInfo {
 	message Change {
-  	string method = 1; //‘Add’ or ‘Remove’
-  	string queue = 2; //Eg. Q1
-  	repeated string owners = 3; //Eg. johndoe@google.com
-	}
+    // The method of the QueueInfo
+    //‘Add’ or ‘Remove’
+    string method = 1;
+    // The name of the queue(s) for the QueueInfo
+    // Eg. Q1, Q2, Q3
+    string queue = 2; //Eg. Q1
+    // The LDAPs of the user's to add or remove
+    //Eg. johndoe, johnnyappleseed
+  	repeated string owners = 3;
+  }
+  //Allows for multiple QueueInfo operations in one template
   repeated Change changes = 4;
 }

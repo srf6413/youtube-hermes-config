@@ -1,9 +1,9 @@
-"""Test file for web_utils.py"""
+"""Test file for web_scraping_utility.py"""
 import unittest
-from web_utils import web_utils
+from web_scraping_utility import web_scraping_utility
 
 class TestsWebUtils(unittest.TestCase):
-  """Test methods from web_utils.py
+  """Test methods from web_scraping_utility.py
 
   Args:
     unittest (unittest.TestCase): unittest Testcase
@@ -12,7 +12,7 @@ class TestsWebUtils(unittest.TestCase):
     """Test the method quit_scrape()
     Assert that the driver is set to None.
     """
-    web_driver = web_utils.WebUtils()
+    web_driver = web_scraping_utility.WebScrapingUtility()
     driver = web_driver.setup_webdriver()
     assert driver is None
 
@@ -20,7 +20,7 @@ class TestsWebUtils(unittest.TestCase):
     """Test the method quit_scrape()
     Assert that the driver is set to None.
     """
-    web_driver = web_utils.WebUtils()
+    web_driver = web_scraping_utility.WebScrapingUtility()
     web_driver.quit_scrape()
     driver = web_driver.driver
     assert driver is None
@@ -29,7 +29,7 @@ class TestsWebUtils(unittest.TestCase):
     """#Test quit_scrape when driver has not been set up.
     #Assert that program returns proper alert message.
     """
-    web_driver = web_utils.WebUtils()
+    web_driver = web_scraping_utility.WebScrapingUtility()
     url = "1337"
     issues = web_driver.scrape_issues(url)
     web_driver.quit_scrape()
@@ -39,7 +39,7 @@ class TestsWebUtils(unittest.TestCase):
     """#Test quit_scrape when driver has not been set up.
     #Assert that program returns proper alert message.
     """
-    web_driver = web_utils.WebUtils()
+    web_driver = web_scraping_utility.WebScrapingUtility()
     url = "https://www.google.com"
     issues = web_driver.scrape_issues(url)
     web_driver.quit_scrape()
@@ -49,7 +49,7 @@ class TestsWebUtils(unittest.TestCase):
     """#Test quit_scrape when driver has not been set up.
     #Assert that program returns proper alert message.
     """
-    web_driver = web_utils.WebUtils()
+    web_driver = web_scraping_utility.WebScrapingUtility()
     url = "https://b.corp.google.com/issues?q=componentid:889136"
     issues = web_driver.scrape_issues(url)
     web_driver.visit_all_issues_in_list(issues)
