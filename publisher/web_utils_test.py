@@ -52,7 +52,7 @@ class TestsWebUtils(unittest.TestCase):
     web_driver = web_utils.WebUtils()
     url = "https://b.corp.google.com/issues?q=componentid:889136"
     issues = web_driver.scrape_issues(url)
-    web_driver.visit_all_issues(issues)
+    web_driver.visit_all_issues_in_list(issues)
     web_driver.quit_scrape()
     assert len(issues) != 0
 

@@ -1,3 +1,4 @@
+
 # Ignore IDE files
 /.vscode/
 
@@ -33,3 +34,6 @@ cover/
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Ignore proto files
+publisher/config_change_request/config_change_pb2.py

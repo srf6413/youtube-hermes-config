@@ -4,7 +4,7 @@
 import time
 from datetime import datetime
 from bs4 import BeautifulSoup
-from selenium import webdriver
+from selenium import webdriver, common
 from logs.global_logger import logger
 from message_utils import message_utils
 import constants
@@ -28,16 +28,19 @@ class WebUtils():
       driver = webdriver.Chrome(executable_path=constants.DRIVER_PATH,
                                 options=options)
       return driver
-    except Exception:
+    except common.exceptions.WebDriverException:
       error_message = str(datetime.now()) + "  ERROR: Failed to load Chrome Driver. Check "\
         "path in constants.py and make sure there are no open windows with the desired profile.\n"
-      logger.info(error_message)
+      logger.error(error_message)
+      return None
+    except Exception as e:
+      print(e)
       return None
 
   def quit_scrape(self):
     """Terminate the webdriver.
     """
-    if self.driver is not None:
+    if self.driver:
       self.driver.quit()
       self.driver = None
 
@@ -52,27 +55,26 @@ class WebUtils():
         Return:
             list : List with all the buganizer issues found under the componentid.
     """
-    buganizer_issues = []
-
     try:
       self.driver.get(url)
     except Exception:
       self.driver.close()
       error_message = str(datetime.now()) + "  ERROR: Failed to reach URL, check "\
       "specified URL in constants.py\n"
-      logger.info(error_message)
-      return buganizer_issues
+      logger.error(error_message)
+      return []
 
     source_html = self.driver.page_source
     soup = BeautifulSoup(source_html, "html.parser")
     page_title = soup.title.string
+    buganizer_issues = []
 
     if "Buganizer" not in page_title or "componentid" not in page_title:
       if "MOMA Single Sign On" in page_title:
         error_message = str(datetime.now()) + "  ERROR: You must log into your MOMA account "\
         "first. Select the 'Use Security Code' option and generate a security code at go/sc.\n"\
           "Once you are logged in, close the browser and re-reun main.py\n"
-        logger.info(error_message)
+        logger.error(error_message)
 
         while "Buganizer" not in page_title:
           source_html = self.driver.page_source
@@ -82,12 +84,12 @@ class WebUtils():
 
         error_message = str(datetime.now()) + "  Close browser window and restart program now "\
           "that you are logged in.\n"
-        logger.info(error_message)
+        logger.error(error_message)
         return buganizer_issues
       error_message = str(datetime.now()) + "  ERROR: URL does not link to a Buganizer "\
         "componentid, check specified URL "\
         "in constants.py\n"
-      logger.info(error_message)
+      logger.error(error_message)
       return buganizer_issues
 
     for tbody in soup.find_all('tbody'):
@@ -97,17 +99,18 @@ class WebUtils():
         buganizer_issues.append(issue_link)
     return buganizer_issues
 
-  def visit_all_issues(self, issues):
+  def visit_all_issues_in_list(self, issues):
     """
-    From the list of buganizer issues, visit each issue and
-        send to message_utils to be parsed.
+    From the list of buganizer issues, visit each issue with the webdriver,
+    find the reporter from an html tag send issue html to message_utils to be parsed.
 
     Args:
             issues (list): the Buganizer urls to scrape
     """
     for issue in issues:
-      reporter = "empty"
+      reporter = ""
       self.driver.get(issue)
+      #Makes sure that page is fully loaded when grabbing the reporter tag
       while "@google.com" not in reporter:
         source_html = self.driver.page_source
         soup = BeautifulSoup(source_html, "html.parser")

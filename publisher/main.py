@@ -19,8 +19,9 @@ class System():
       issues = self._web_util.scrape_issues(url)
 
       if len(issues) > 0:
-          self._web_util.visit_all_issues(issues)
+          self._web_util.visit_all_issues_in_list(issues)
 
 if __name__ == "__main__":
   system = System()
-  system.begin_scrape(constants.URL)
+  if system._web_util.driver:
+    system.begin_scrape(constants.URL)
