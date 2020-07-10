@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# A minimal WORKSPACE file showing how to use the Google Cloud Bigtable C++
-# client library in Bazel-based projects.
-workspace(name = "com_github_googleapis_google_cloud_cpp_bigtable_quickstart")
+workspace(name = "hermes_intern")
 
 # Add the necessary Starlark functions to fetch google-cloud-cpp.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -85,4 +83,10 @@ http_archive(
   urls = ["https://github.com/abseil/abseil-cpp/archive/c512f118dde6ffd51cb7d8ac8804bbaf4d266c3a.zip"],
   strip_prefix = "abseil-cpp-c512f118dde6ffd51cb7d8ac8804bbaf4d266c3a",
   sha256 = "8400c511d64eb4d26f92c5ec72535ebd0f843067515244e8b50817b0786427f9",
+)
+
+
+local_repository(
+    name = "proto_files",
+    path = "./",
 )
