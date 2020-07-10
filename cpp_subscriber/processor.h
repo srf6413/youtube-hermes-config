@@ -22,7 +22,7 @@
 #include <thread>
 #include <vector>
 
-#include "proto/config_type.pb.h"
+#include "proto/config_change.pb.h"
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 #include "absl/strings/string_view.h"
 

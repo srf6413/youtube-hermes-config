@@ -17,7 +17,7 @@
 #include <string>
 
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
-#include "proto/config_type.pb.h"
+#include "proto/config_change.pb.h"
 
 namespace youtube_hermes_config_subscriber {
 
