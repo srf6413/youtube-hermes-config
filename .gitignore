@@ -1,5 +1,8 @@
 # Ignore log files
-logs/
+*.log
+
+# Ignore proto generated files
+config_change_request/config_change_pb2.py
 
 # Environments
 .env
