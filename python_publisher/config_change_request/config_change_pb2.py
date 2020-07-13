@@ -20,11 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-<<<<<<< HEAD
   serialized_pb=_b('\n\x13\x63onfig_change.proto\"\xa3\x01\n\x13\x43onfigChangeRequest\x12$\n\x0c\x65nqueue_rule\x18\x01 \x01(\x0b\x32\x0c.EnqueueRuleH\x00\x12$\n\x0crouting_rule\x18\x02 \x01(\x0b\x32\x0c.RoutingRuleH\x00\x12 \n\nqueue_info\x18\x03 \x01(\x0b\x32\n.QueueInfoH\x00\x12\x10\n\x08reporter\x18\x04 \x01(\tB\x0c\n\nConfigType\"\x80\x01\n\x0b\x45nqueueRule\x12$\n\x07\x63hanges\x18\x01 \x03(\x0b\x32\x13.EnqueueRule.Change\x1aK\n\x06\x43hange\x12\x0e\n\x06method\x18\x01 \x01(\t\x12\r\n\x05queue\x18\x02 \x01(\t\x12\x10\n\x08\x66\x65\x61tures\x18\x03 \x03(\t\x12\x10\n\x08priority\x18\x04 \x01(\x05\"u\n\x0bRoutingRule\x12$\n\x07\x63hanges\x18\x04 \x03(\x0b\x32\x13.RoutingRule.Change\x1a@\n\x06\x43hange\x12\x0e\n\x06method\x18\x01 \x01(\t\x12\r\n\x05queue\x18\x02 \x01(\t\x12\x17\n\x0fpossible_routes\x18\x03 \x03(\t\"h\n\tQueueInfo\x12\"\n\x07\x63hanges\x18\x04 \x03(\x0b\x32\x11.QueueInfo.Change\x1a\x37\n\x06\x43hange\x12\x0e\n\x06method\x18\x01 \x01(\t\x12\r\n\x05queue\x18\x02 \x01(\t\x12\x0e\n\x06owners\x18\x03 \x03(\tb\x06proto3')
-=======
-  serialized_pb=_b('\n\x13\x63onfig_change.proto\"\xa3\x01\n\x13\x43onfigChangeRequest\x12$\n\x0c\x65nqueue_rule\x18\x01 \x01(\x0b\x32\x0c.EnqueueRuleH\x00\x12$\n\x0crouting_rule\x18\x02 \x01(\x0b\x32\x0c.RoutingRuleH\x00\x12 \n\nqueue_info\x18\x03 \x01(\x0b\x32\n.QueueInfoH\x00\x12\x10\n\x08reporter\x18\x04 \x01(\tB\x0c\n\nConfigType\"\x80\x01\n\x0b\x45nqueueRule\x12$\n\x07\x63hanges\x18\x01 \x03(\x0b\x32\x13.EnqueueRule.Change\x1aK\n\x06\x43hange\x12\x0e\n\x06method\x18\x01 \x01(\t\x12\r\n\x05queue\x18\x02 \x01(\t\x12\x10\n\x08\x66\x65\x61tures\x18\x03 \x03(\t\x12\x10\n\x08priority\x18\x04 \x01(\x05\"u\n\x0bRoutingRule\x12$\n\x07\x63hanges\x18\x04 \x03(\x0b\x32\x13.RoutingRule.Change\x1a@\n\x06\x43hange\x12\x0e\n\x06method\x18\x01 \x01(\t\x12\r\n\x05queue\x18\x02 \x01(\t\x12\x17\n\x0fpossible_routes\x18\x03 \x03(\t\"g\n\tQueueInfo\x12\"\n\x07\x63hanges\x18\x04 \x03(\x0b\x32\x11.QueueInfo.Change\x1a\x36\n\x06\x43hange\x12\x0e\n\x06method\x18\x01 \x01(\t\x12\r\n\x05queue\x18\x02 \x01(\t\x12\r\n\x05owner\x18\x03 \x03(\tb\x06proto3')
->>>>>>> 992f0cf... Buganizer Web Scraper MVP
 )
 
 
@@ -264,11 +260,7 @@ _QUEUEINFO_CHANGE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-<<<<<<< HEAD
       name='owners', full_name='QueueInfo.Change.owners', index=2,
-=======
-      name='owner', full_name='QueueInfo.Change.owner', index=2,
->>>>>>> 992f0cf... Buganizer Web Scraper MVP
       number=3, type=9, cpp_type=9, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -287,11 +279,7 @@ _QUEUEINFO_CHANGE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=488,
-<<<<<<< HEAD
   serialized_end=543,
-=======
-  serialized_end=542,
->>>>>>> 992f0cf... Buganizer Web Scraper MVP
 )
 
 _QUEUEINFO = _descriptor.Descriptor(
@@ -321,11 +309,7 @@ _QUEUEINFO = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=439,
-<<<<<<< HEAD
   serialized_end=543,
-=======
-  serialized_end=542,
->>>>>>> 992f0cf... Buganizer Web Scraper MVP
 )
 
 _CONFIGCHANGEREQUEST.fields_by_name['enqueue_rule'].message_type = _ENQUEUERULE
