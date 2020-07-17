@@ -20,7 +20,7 @@ def GraphImpact(impact_analysis):
 
 
 impact_analysis = impact_analysis_response_pb2.ImpactAnalysisResponse()
-f = open("/Users/isaiah/Dev/Google/youtube-hermes-config/response_results/impact.txt", "rb")
+f = open("/usr/local/google/home/ballah/Documents/dev/youtube-hermes-config/graph_response/impact.txt", "rb")
 impact_analysis.ParseFromString(f.read())
 f.close()
 
