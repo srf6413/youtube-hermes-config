@@ -19,6 +19,7 @@ licenses(["notice"])  # Apache 2.0
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@rules_python//python:defs.bzl", "py_binary")
 load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
+load("@my_deps//:requirements.bzl", "requirement")
 
 
 py_proto_library(
@@ -42,7 +43,9 @@ py_binary(
   name = "main",
   srcs = ["main.py"],
   deps =[
-	  "impact_proto_py"
+	  "impact_proto_py",
+    # requirement("matplotlib"),
+    # requirement("pandas")
   ]
 )
 
