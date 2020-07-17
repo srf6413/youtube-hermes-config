@@ -51,7 +51,9 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
   using google::protobuf::util::StatusOr;
   using google::protobuf::util::Status;
   using google::protobuf::util::error::Code;
-
+  using youtube_hermes_config_subscriber::PublishMessage;
+  using youtube_hermes_config_subscriber::getDummyImpactAnalysis;
+  
   ConfigChangeRequest config_change_request;
   bool parsed_succesfully = config_change_request.ParseFromString(message.data());
 
@@ -87,8 +89,9 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
     std::cout << kInvalidConfigurationWarning << std::endl;
     return Status(Code::INVALID_ARGUMENT, kInvalidConfigurationWarning);
   }
-  
-  
+
+  PublishMessage(getDummyImpactAnalysis(), kPublisherTopicLink);
+
   return config_change_request;
 }
 

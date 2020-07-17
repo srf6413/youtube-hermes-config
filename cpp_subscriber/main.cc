@@ -37,23 +37,7 @@ const char kPublisherTopicLink[] = "projects/google.com:youtube-admin-pacing-ser
 const int kSecondsToKeepClientAlive = 1200;
 
 
-
 int main() {
-  using youtube_hermes_config_subscriber::PublishMessage;
-  using youtube_hermes_config_subscriber::getDummyImpactAnalysis;
-
-  std::cout<<getDummyImpactAnalysis()<<std::endl;
-  PublishMessage(getDummyImpactAnalysis(), kPublisherTopicLink);
-
-  std::ofstream myfile;
-  myfile.open ("/Users/isaiah/Dev/Google/youtube-hermes-config/cpp_subscriber/example.txt");
-  myfile << getDummyImpactAnalysis();
-  myfile.close();
-
-  return 0;
-}
-
-int aamain2() {
 
   // Creates a Client that polls pubsub and Runs it 
   // passing the MessageProcessor function as a callback.
