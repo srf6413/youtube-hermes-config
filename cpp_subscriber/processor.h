@@ -26,6 +26,8 @@
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 #include "absl/strings/string_view.h"
 
+#include "publisher.h"
+
 namespace youtube_hermes_config_subscriber {
 
 typedef google::protobuf::util::StatusOr<ConfigChangeRequest> MessageCallback(google::pubsub::v1::PubsubMessage const&);
@@ -37,6 +39,7 @@ const char kSuccessfulParsingMessage[] = "Successfully parsed ConfigChangeReques
 const char kEnqueueRuleHeader[] = "-- Enqueue Rule --";
 const char kRoutingRuleHeader[] = "-- Routing Rule --";
 const char kQueueInfoHeader[] = "-- Queue Info --";
+const char kPublisherTopicLink[] = "projects/google.com:youtube-admin-pacing-server/topics/TestImpactAnalysisResponse";
 
 // MessageProcessor Templated function.
 // Message class should be a `MockMessage` or `google::pubsub::v1::PubsubMessage`.
@@ -84,6 +87,7 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
     std::cout << kInvalidConfigurationWarning << std::endl;
     return Status(Code::INVALID_ARGUMENT, kInvalidConfigurationWarning);
   }
+  
   
   return config_change_request;
 }

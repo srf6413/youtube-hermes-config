@@ -30,32 +30,8 @@
 
 namespace youtube_hermes_config_subscriber {
 
-void PublishMessage(const std::string message_data, const std::string topic) {
-  using grpc::ClientContext;
-  using google::pubsub::v1::Publisher;
-  using google::pubsub::v1::PublishRequest;
-  using google::pubsub::v1::PublishResponse;
-  using google::pubsub::v1::PubsubMessage;
-
-  auto credentials = grpc::GoogleDefaultCredentials();
-  auto channel = grpc::CreateChannel("pubsub.googleapis.com", credentials);
-  std::unique_ptr<Publisher::Stub> stub(Publisher::NewStub(channel));
-
-  PublishRequest request;
-  request.set_topic(topic);
-  PubsubMessage message;
-  message.set_data(message_data);
-  *request.add_messages() = message;
-
-  PublishResponse response;
-  ClientContext clientContext;
-
-  auto status = stub->Publish(&clientContext, request, &response);
-  if (!status.ok()) {
-      std::cout << "failed" + std::to_string(status.error_code()) + ": " + status.error_message() << '\n';
-  }
-
-}
+std::string getDummyImpactAnalysis();
+void PublishMessage(const std::string message_data, const std::string topic);
 
 }  // namespace youtube_hermes_config_subscriber
 

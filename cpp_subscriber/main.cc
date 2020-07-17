@@ -18,6 +18,9 @@
 #include <string>
 #include <vector>
 #include <string>
+#include <stdlib.h>
+
+#include <fstream>
 
 #include "absl/memory/memory.h"
 #include "client.h"
@@ -33,30 +36,24 @@ const char kSubscriptionsLink[] = "projects/google.com:youtube-admin-pacing-serv
 const char kPublisherTopicLink[] = "projects/google.com:youtube-admin-pacing-server/topics/TestImpactAnalysisResponse";
 const int kSecondsToKeepClientAlive = 1200;
 
-std::string getDummyImpactAnalysis() {
-  ImpactAnalysisResponse impact_analysis;
-  ConfigChangeRequest* config = impact_analysis.mutable_request();
-  
-  RoutingRule_Change* change = config->mutable_routing_rule()->add_changes();
-  change->set_method("Add");
-  change->set_queue("q1");
-  change->add_possible_routes("q2");
-  change->add_possible_routes("q3");
-  change->add_possible_routes("q4");
 
-  //Todo add dummy queue-impact objects to impact analysis object.
-
-  return impact_analysis.SerializeAsString();
-}
 
 int main() {
   using youtube_hermes_config_subscriber::PublishMessage;
+  using youtube_hermes_config_subscriber::getDummyImpactAnalysis;
+
   std::cout<<getDummyImpactAnalysis()<<std::endl;
   PublishMessage(getDummyImpactAnalysis(), kPublisherTopicLink);
+
+  std::ofstream myfile;
+  myfile.open ("/Users/isaiah/Dev/Google/youtube-hermes-config/cpp_subscriber/example.txt");
+  myfile << getDummyImpactAnalysis();
+  myfile.close();
+
   return 0;
 }
 
-int main2() {
+int aamain2() {
 
   // Creates a Client that polls pubsub and Runs it 
   // passing the MessageProcessor function as a callback.

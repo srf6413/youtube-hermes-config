@@ -18,7 +18,26 @@ licenses(["notice"])  # Apache 2.0
 
 load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@rules_cc//cc:defs.bzl", "cc_proto_library")
-# load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
+load("@rules_python//python:defs.bzl", "py_binary")
+load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
+
+
+py_proto_library(
+	visibility = ["//visibility:public"],
+    name = "impact_proto_py",
+    srcs = ["impact_analysis_response.proto",],
+    deps = [
+		"@com_google_protobuf//:protobuf_python",
+		":config_proto_py"
+	],
+)
+
+py_proto_library(
+	visibility = ["//visibility:public"],
+    name = "config_proto_py",
+    srcs = ["config_change.proto"],
+    deps = ["@com_google_protobuf//:protobuf_python"],
+)
 
 cc_proto_library(
     name = "impact_proto_cc_proto",

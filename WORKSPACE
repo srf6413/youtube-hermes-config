@@ -60,6 +60,13 @@ http_archive(
     ],
 )
 
+http_archive(
+    name = "rules_python",
+    url = "https://github.com/bazelbuild/rules_python/releases/download/0.0.2/rules_python-0.0.2.tar.gz",
+    strip_prefix = "rules_python-0.0.2",
+    sha256 = "b5668cde8bb6e3515057ef465a35ad712214962f0b3a314e551204266c7be90c",
+)
+
 # rules_proto defines abstract rules for building Protocol Buffers.
 http_archive(
     name = "rules_proto",
@@ -72,6 +79,10 @@ http_archive(
 )
 load("@rules_cc//cc:repositories.bzl", "rules_cc_dependencies")
 rules_cc_dependencies()
+
+
+load("@rules_python//python:pip.bzl", "pip_repositories")
+pip_repositories()
 
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
 rules_proto_dependencies()
@@ -97,4 +108,9 @@ http_archive(
 local_repository(
     name = "proto_files",
     path = "./",
+)
+
+local_repository(
+    name = "python",
+    path = "./response_results",
 )

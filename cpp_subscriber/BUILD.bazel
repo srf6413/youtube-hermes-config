@@ -22,7 +22,7 @@ load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 
 cc_library(
   name = "subscriber-lib",
-  srcs = ["client.cc", "mock_message.cc", "proto/config_change.pb.cc", "proto/impact_analysis_response.pb.cc"],
+  srcs = ["client.cc", "mock_message.cc", "proto/config_change.pb.cc", "proto/impact_analysis_response.pb.cc", "publisher.cc"],
   hdrs = ["client.h", "processor.h", "publisher.h", "mock_message.h", "proto/config_change.pb.h", "proto/impact_analysis_response.pb.h"],
   deps = [
     "@com_github_grpc_grpc//:grpc++",
