@@ -26,6 +26,8 @@
 #include "client.h"
 #include "proto/config_change.pb.h"
 #include "proto/impact_analysis_response.pb.h"
+// #include "config_change.pb.h"
+// #include "impact_analysis_response.pb.h"
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 
 #include "mock_message.h"
@@ -35,7 +37,6 @@
 const char kSubscriptionsLink[] = "projects/google.com:youtube-admin-pacing-server/subscriptions/CppBinary";
 const char kPublisherTopicLink[] = "projects/google.com:youtube-admin-pacing-server/topics/TestImpactAnalysisResponse";
 const int kSecondsToKeepClientAlive = 1200;
-
 
 int main() {
 

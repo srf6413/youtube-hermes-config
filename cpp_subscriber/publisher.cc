@@ -35,13 +35,6 @@ std::string getDummyImpactAnalysis() {
 
   ImpactAnalysisResponse impact_analysis;
   ConfigChangeRequest* config = impact_analysis.mutable_request();
-  
-  RoutingRule_Change* change = config->mutable_routing_rule()->add_changes();
-  change->set_method("Add");
-  change->set_queue("1");
-  change->add_possible_routes("2");
-  change->add_possible_routes("3");
-  change->add_possible_routes("4");
 
   // Timestamp* start_time = new Timestamp(); 
   // Timestamp* end_time = new Timestamp(); 

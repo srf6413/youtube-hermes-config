@@ -23,6 +23,7 @@
 #include <vector>
 
 #include "proto/config_change.pb.h"
+// #include "config_change.pb.h"
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 #include "absl/strings/string_view.h"
 
@@ -65,33 +66,10 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
   }
 
   std::cout << std::endl << kSuccessfulParsingMessage << std::endl;
-  
-  if (config_change_request.has_enqueue_rule()) {
-    // Log each EnqueueRule.
-    std::cout << kEnqueueRuleHeader << std::endl;
-    for (const auto& change : config_change_request.enqueue_rule().changes()) {
-      std::cout << change.DebugString() << std::endl;
-    }
-  } else if (config_change_request.has_routing_rule()) {
-    // Log each RoutingRule.
-    std::cout << kRoutingRuleHeader << std::endl;
-    for (const auto& change : config_change_request.routing_rule().changes()) {
-      std::cout << change.DebugString() << std::endl;
-    }
-  } else if (config_change_request.has_queue_info()) {
-    // Log each QueueInfo.
-    std::cout << kQueueInfoHeader << std::endl;
-    for (const auto& change : config_change_request.queue_info().changes()) {
-      std::cout << change.DebugString() << std::endl;
-    }
-  } else {
-    // Log Invalid Configuration Warning.
-    std::cout << kInvalidConfigurationWarning << std::endl;
-    return Status(Code::INVALID_ARGUMENT, kInvalidConfigurationWarning);
-  }
+  std::cout << config_change_request.DebugString() << std::endl;
 
   PublishMessage(getDummyImpactAnalysis(), kPublisherTopicLink);
-
+  
   return config_change_request;
 }
 
