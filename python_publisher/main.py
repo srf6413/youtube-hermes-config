@@ -21,7 +21,7 @@ class System():
       issues = self.web_scraping_util.scrape_issues(url)
 
       if len(issues) > 0:
-          self.web_scraping_util.visit_all_issues_in_list(issues)
+        self.web_scraping_util.visit_all_issues_in_list(issues)
 
 if __name__ == "__main__":
   system = System()

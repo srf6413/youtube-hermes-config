@@ -17,6 +17,23 @@ class MessageParsingUtility():
     self.issue_comments_counts = {}
     self.logger = logger
 
+  def publish_buganizer_fields(self, advanced_fields):
+    """Create a RoutingTargets or QueueInfo ConfigChangeRequest object
+    and publishes the proto object
+
+    Args:
+        advanced_fields (dict): dictionary that holds all advanced fields values
+    """
+    factory = config_change_request.ConfigurationTypeFactory(advanced_fields)
+    config_change = factory.make()
+    
+    #This means template was valid and ready to send
+    if config_change.proto is not None:
+      factory.publish(config_change.proto)
+    #Otherwise log what the problem with the template was
+    else:
+      self.logger.log(config_change.error_message)
+
   def parse_page(self, soup, reporter, issue):
     """Parses the source html for the reporter and their comments from each
     of the issues under the given componentid. Once each comment is scraped, the message
@@ -66,18 +83,14 @@ class MessageParsingUtility():
       self.logger.log(error)
       return
 
-    factory = config_change_request.ConfigurationTypeFactory(reporter, config_change_type,
-                                                             issue, comment)
-    if config_change_type == "EnqueueRule":
-      config_change = factory.make_enqueue_rule(template)
-    elif config_change_type == "RoutingRule":
-      config_change = factory.make_routing_rule(template)
-    elif config_change_type == "QueueInfo":
-      config_change = factory.make_queue_info(template)
+    factory = config_change_request.ConfigurationTypeFactory()
+
+    if config_change_type == "EnqueueRules":
+      config_change = factory.make_enqueue_rules(template, reporter, comment, issue)
     else:
       error = "The following configuration change request from " + \
-      issue + " is invalid. The configuraiton type specified is not a valid configuration type"\
-        "(EnqueueRule, RoutingRule, QueueInfo). Please check that the format correctly matches "\
+      issue + " is invalid. The configuraiton type specified is not a valid configuration type."\
+        "Please check that the format correctly matches "\
           "template and try again.\n" + \
       comment + "\n"
       self.logger.log(error)
