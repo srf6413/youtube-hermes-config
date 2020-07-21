@@ -36,6 +36,8 @@
 
 const char kSubscriptionsLink[] = "projects/google.com:youtube-admin-pacing-server/subscriptions/CppBinary";
 const char kPublisherTopicLink[] = "projects/google.com:youtube-admin-pacing-server/topics/TestImpactAnalysisResponse";
+const char kImpactFilePath[] = "/Users/isaiah/Dev/Google/youtube-hermes-config/cpp_subscriber/impact.txt";
+
 const int kSecondsToKeepClientAlive = 1200;
 
 int main() {
@@ -46,6 +48,8 @@ int main() {
   using youtube_hermes_config_subscriber::Client;
   using youtube_hermes_config_subscriber::MessageProcessor;
 
+  writeProtoToFile();
+  
   Client client = Client(kSubscriptionsLink);
   client.Run(MessageProcessor<PubsubMessage>);
   std::this_thread::sleep_for(std::chrono::seconds(kSecondsToKeepClientAlive));
@@ -59,4 +63,18 @@ int main() {
   client.JoinThread();
   std::cout << "Program Terminating" << std::endl;
   return 0;
+}
+
+int writeProtoToFile() {
+    using youtube_hermes_config_subscriber::PublishMessage;
+    using youtube_hermes_config_subscriber::getDummyImpactAnalysis;
+
+    ConfigChangeRequest request;
+    std::string impact = getDummyImpactAnalysis(request);
+
+    std::ofstream impactFile;
+    impactFile.open (kImpactFilePath);
+    impactFile << impact;
+
+    PublishMessage(impact, kPublisherTopicLink);
 }
