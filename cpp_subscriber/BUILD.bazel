@@ -30,8 +30,8 @@ cc_library(
     "@com_github_grpc_grpc//:grpc++",
     "@com_google_googleapis//google/pubsub/v1:pubsub_cc_grpc",
 	  "@com_google_absl//absl/strings",
-    ":config_change_cc_proto",
-    ":impact_proto_cc_proto"
+    # ":config_change_cc_proto",
+    # ":impact_proto_cc_proto"
   ],
 )
 

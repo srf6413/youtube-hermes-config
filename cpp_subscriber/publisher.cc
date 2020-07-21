@@ -30,11 +30,24 @@
 
 namespace youtube_hermes_config_subscriber {
 
-std::string getDummyImpactAnalysis() {
+std::string getErrorImpactAnalysis(const ConfigChangeRequest config_change_request, const std::string error) {
+  ImpactAnalysisResponse impact_analysis;
+  impact_analysis.set_allocated_request(new ConfigChangeRequest(config_change_request));
+  impact_analysis.set_error_message(error);
+  return impact_analysis.SerializeAsString();
+}
+
+std::string getEmptyImpactAnalysis(const ConfigChangeRequest config_change_request) {
+  ImpactAnalysisResponse impact_analysis;
+  impact_analysis.set_allocated_request(new ConfigChangeRequest(config_change_request));
+  return impact_analysis.SerializeAsString();
+}
+
+std::string getDummyImpactAnalysis(const ConfigChangeRequest config_change_request) {
   using google::protobuf::Timestamp;
 
   ImpactAnalysisResponse impact_analysis;
-  ConfigChangeRequest* config = impact_analysis.mutable_request();
+  //impact_analysis.set_allocated_request(new ConfigChangeRequest(config_change_request));
 
   // Timestamp* start_time = new Timestamp(); 
   // Timestamp* end_time = new Timestamp(); 
@@ -47,6 +60,7 @@ std::string getDummyImpactAnalysis() {
   //Todo add dummy queue-impact objects to impact analysis object.
   for (int i = 0; i < 10; i++) {
     QueueImpactAnalysis* queue_impact_analysis = impact_analysis.add_queue_impact_analysis_list();
+    queue_impact_analysis->set_queue_id(std::to_string(i));
     queue_impact_analysis->set_desired_sla_min(rand() % 60 + 60);
     queue_impact_analysis->set_previous_sla_min(rand() % 60 + 60);
     queue_impact_analysis->set_new_sla_min(rand() % 60 + 60);
@@ -57,6 +71,10 @@ std::string getDummyImpactAnalysis() {
     queue_impact_analysis->set_previous_avg_video_volume_per_hour(rand() % 1000 + 500);
     queue_impact_analysis->set_new_avg_video_volume_per_hour(rand() % 1000 + 500);
   }
+
+  ImpactAnalysisResponse test;
+  test.ParseFromString(impact_analysis.SerializeAsString());
+  std::cout << "TEST!!! " << test.DebugString() << std::endl;
 
   return impact_analysis.SerializeAsString();
 }

@@ -54,6 +54,7 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
   using google::protobuf::util::error::Code;
   using youtube_hermes_config_subscriber::PublishMessage;
   using youtube_hermes_config_subscriber::getDummyImpactAnalysis;
+  using youtube_hermes_config_subscriber::getErrorImpactAnalysis;
   
   ConfigChangeRequest config_change_request;
   bool parsed_succesfully = config_change_request.ParseFromString(message.data());
@@ -68,8 +69,24 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
   std::cout << std::endl << kSuccessfulParsingMessage << std::endl;
   std::cout << config_change_request.DebugString() << std::endl;
 
-  PublishMessage(getDummyImpactAnalysis(), kPublisherTopicLink);
-  
+  if (config_change_request.has_enqueue_rules()) {
+    PublishMessage(getDummyImpactAnalysis(config_change_request), kPublisherTopicLink);
+  }
+  else if (config_change_request.has_routing_targets()) {
+    // Ensure that the routing targets is specifiying targets to add, or remove.
+    if ((config_change_request.routing_targets().add_queues_to_route_to_size() + 
+        config_change_request.routing_targets().remove_queues_to_route_to_size()) == 0) {
+      // There are no queues to add or remove, therefore this is an invalid request.
+      // Publish message with a error message & return an invalid status;
+      PublishMessage(getErrorImpactAnalysis(config_change_request, kParsingFailedWarning), kPublisherTopicLink);
+      return Status(Code::INVALID_ARGUMENT, kParsingFailedWarning); // TODO change state constat to proper error
+    }
+    PublishMessage(getDummyImpactAnalysis(config_change_request), kPublisherTopicLink);
+  }
+  else if (config_change_request.has_queue_info()) {
+    PublishMessage(getEmptyImpactAnalysis(config_change_request), kPublisherTopicLink);
+  }
+
   return config_change_request;
 }
 

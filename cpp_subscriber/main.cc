@@ -52,13 +52,13 @@ int main() {
   
   Client client = Client(kSubscriptionsLink);
   client.Run(MessageProcessor<PubsubMessage>);
-  std::this_thread::sleep_for(std::chrono::seconds(kSecondsToKeepClientAlive));
+  // std::this_thread::sleep_for(std::chrono::seconds(kSecondsToKeepClientAlive));
 
   // Currently it takes around 30 seconds for the stream object in the client 
   // to close after calling this Stop method.
   // We will not need to call Stop in production,
   // in Prodoction the client will run indefinitly.
-  client.Stop();
+  // client.Stop();
   
   client.JoinThread();
   std::cout << "Program Terminating" << std::endl;
