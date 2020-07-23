@@ -47,7 +47,7 @@ std::string getDummyImpactAnalysis(const ConfigChangeRequest config_change_reque
   using google::protobuf::Timestamp;
 
   ImpactAnalysisResponse impact_analysis;
-  //impact_analysis.set_allocated_request(new ConfigChangeRequest(config_change_request));
+  impact_analysis.set_allocated_request(new ConfigChangeRequest(config_change_request));
 
   // Timestamp* start_time = new Timestamp(); 
   // Timestamp* end_time = new Timestamp(); 

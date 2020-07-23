@@ -37,6 +37,7 @@ typedef google::protobuf::util::StatusOr<ConfigChangeRequest> MessageCallback(go
 const char kInvalidConfigurationWarning[] = "Invalid ConfigChangeRequest Object. ConfigChangeRequest must have oneof (enqueue_rule, routing_rule, queue_info)";
 const char kParsingFailedWarning[] = "Failed to parse ConfigChangeRequest Object from String";
 const char kSuccessfulParsingMessage[] = "Successfully parsed ConfigChangeRequest from message";
+const char kNoRoutingTargets[] = "There are no routing targets to add or remove. Please specify route_to targets to ADD or REMMOVE";
 const char kEnqueueRuleHeader[] = "-- Enqueue Rule --";
 const char kRoutingRuleHeader[] = "-- Routing Rule --";
 const char kQueueInfoHeader[] = "-- Queue Info --";
@@ -78,8 +79,8 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
         config_change_request.routing_targets().remove_queues_to_route_to_size()) == 0) {
       // There are no queues to add or remove, therefore this is an invalid request.
       // Publish message with a error message & return an invalid status;
-      PublishMessage(getErrorImpactAnalysis(config_change_request, kParsingFailedWarning), kPublisherTopicLink);
-      return Status(Code::INVALID_ARGUMENT, kParsingFailedWarning); // TODO change state constat to proper error
+      PublishMessage(getErrorImpactAnalysis(config_change_request, kNoRoutingTargets), kPublisherTopicLink);
+      return Status(Code::INVALID_ARGUMENT, kNoRoutingTargets); // TODO change state constat to proper error
     }
     PublishMessage(getDummyImpactAnalysis(config_change_request), kPublisherTopicLink);
   }

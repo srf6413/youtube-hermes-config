@@ -40,6 +40,8 @@ const char kImpactFilePath[] = "/Users/isaiah/Dev/Google/youtube-hermes-config/c
 
 const int kSecondsToKeepClientAlive = 1200;
 
+int writeProtoToFile();
+
 int main() {
 
   // Creates a Client that polls pubsub and Runs it 
@@ -47,8 +49,6 @@ int main() {
   using google::pubsub::v1::PubsubMessage;
   using youtube_hermes_config_subscriber::Client;
   using youtube_hermes_config_subscriber::MessageProcessor;
-
-  writeProtoToFile();
   
   Client client = Client(kSubscriptionsLink);
   client.Run(MessageProcessor<PubsubMessage>);
