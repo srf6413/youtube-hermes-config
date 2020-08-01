@@ -21,18 +21,18 @@ message EnqueueRule {
 
 message RoutingRule {
   message Change {
-    string method = 1;
-    string queue = 2;
-    repeated string possible_routes = 3;
-  }
+  	string method = 1;
+  	string queue = 2;
+  	repeated string possible_routes = 3;
+	}
   repeated Change changes = 4;
 }
 
 message QueueInfo {
-  message Change {
-    string method = 1;
-    string queue = 2;
-    repeated string owners = 3;
-  }
+	message Change {
+  	string method = 1;
+  	string queue = 2;
+  	repeated string owner = 3;
+	}
   repeated Change changes = 4;
 }

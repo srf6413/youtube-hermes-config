@@ -1,5 +1,0 @@
-[run]
-omit = /usr/local/google/home/sauloferreira/Development/youtube-hermes-config/publisher/venv/*, /usr/local/google/home/sauloferreira/Development/youtube-hermes-config/publisher/config_type/config_type_pb2.py,/usr/local/google/home/sauloferreira/Development/youtube-hermes-config/publisher/src/test.py
-
-[report]
-omit = /usr/local/google/home/sauloferreira/Development/youtube-hermes-config/publisher/venv/*, /usr/local/google/home/sauloferreira/Development/youtube-hermes-config/publisher/config_type/config_type_pb2.py,/usr/local/google/home/sauloferreira/Development/youtube-hermes-config/publisher/src/test.py
