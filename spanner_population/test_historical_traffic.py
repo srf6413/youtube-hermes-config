@@ -74,7 +74,7 @@ class TestsHistoricalTraffic(unittest.TestCase):
     h_t.populate_queues()
     h_t.populate_video_lifecycle()
 
-    #Checks that EnqueueSignal timestamps are created before cooresponding RoutedSignals
+    #Checks that EnqueueSignal timestamps are created before corresponding RoutedSignals
     #and RoutedSignals are created before respective VerdictSignals.
     query = "SELECT count(*) FROM EnqueueSignal "\
       "FULL OUTER JOIN RoutedSignal ON EnqueueSignal.LifeCycleId = RoutedSignal.LifeCycleId "\
