@@ -26,8 +26,6 @@
 #include "client.h"
 #include "proto/config_change.pb.h"
 #include "proto/impact_analysis_response.pb.h"
-// #include "config_change.pb.h"
-// #include "impact_analysis_response.pb.h"
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 
 #include "mock_message.h"
@@ -40,8 +38,6 @@ const char kImpactFilePath[] = "/Users/isaiah/Dev/Google/youtube-hermes-config/c
 
 const int kSecondsToKeepClientAlive = 1200;
 
-int writeProtoToFile();
-
 int main() {
 
   // Creates a Client that polls pubsub and Runs it 
@@ -52,29 +48,9 @@ int main() {
   
   Client client = Client(kSubscriptionsLink);
   client.Run(MessageProcessor<PubsubMessage>);
-  // std::this_thread::sleep_for(std::chrono::seconds(kSecondsToKeepClientAlive));
 
-  // Currently it takes around 30 seconds for the stream object in the client 
-  // to close after calling this Stop method.
-  // We will not need to call Stop in production,
-  // in Prodoction the client will run indefinitly.
-  // client.Stop();
-  
+  // Join the thread from the client in order to keep the program running.
   client.JoinThread();
   std::cout << "Program Terminating" << std::endl;
   return 0;
-}
-
-int writeProtoToFile() {
-    using youtube_hermes_config_subscriber::PublishMessage;
-    using youtube_hermes_config_subscriber::getDummyImpactAnalysis;
-
-    ConfigChangeRequest request;
-    std::string impact = getDummyImpactAnalysis(request);
-
-    std::ofstream impactFile;
-    impactFile.open (kImpactFilePath);
-    impactFile << impact;
-
-    PublishMessage(impact, kPublisherTopicLink);
 }

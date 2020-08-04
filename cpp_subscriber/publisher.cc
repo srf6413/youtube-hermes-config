@@ -49,37 +49,20 @@ std::string getDummyImpactAnalysis(const ConfigChangeRequest config_change_reque
   ImpactAnalysisResponse impact_analysis;
   impact_analysis.set_allocated_request(new ConfigChangeRequest(config_change_request));
 
-  // Timestamp* start_time = new Timestamp(); 
-  // Timestamp* end_time = new Timestamp(); 
-  // start_time->set_seconds(time(NULL));
-  // start_time->set_nanos(0);
-  // end_time->set_seconds(time(NULL) + 216000);
-  // end_time->set_nanos(0);
-
-
-  //Todo add dummy queue-impact objects to impact analysis object.
   for (int i = 0; i < 10; i++) {
     QueueImpactAnalysis* queue_impact_analysis = impact_analysis.add_queue_impact_analysis_list();
     queue_impact_analysis->set_queue_id(std::to_string(i));
     queue_impact_analysis->set_desired_sla_min(rand() % 60 + 60);
     queue_impact_analysis->set_previous_sla_min(rand() % 60 + 60);
     queue_impact_analysis->set_new_sla_min(rand() % 60 + 60);
-
-    // queue_impact_analysis->set_allocated_analysis_period_start(start_time);
-    // queue_impact_analysis->set_allocated_analysis_period_end(end_time);
-
     queue_impact_analysis->set_previous_avg_video_volume_per_hour(rand() % 1000 + 500);
     queue_impact_analysis->set_new_avg_video_volume_per_hour(rand() % 1000 + 500);
   }
 
-  ImpactAnalysisResponse test;
-  test.ParseFromString(impact_analysis.SerializeAsString());
-  std::cout << "TEST!!! " << test.DebugString() << std::endl;
-
   return impact_analysis.SerializeAsString();
 }
 
-void PublishMessage(const std::string message_data, const std::string topic) {
+grpc::Status PublishMessage(const std::string message_data, const std::string topic) {
   using grpc::ClientContext;
   using google::pubsub::v1::Publisher;
   using google::pubsub::v1::PublishRequest;
@@ -99,11 +82,12 @@ void PublishMessage(const std::string message_data, const std::string topic) {
   PublishResponse response;
   ClientContext clientContext;
 
-  auto status = stub->Publish(&clientContext, request, &response);
+  grpc::Status status = stub->Publish(&clientContext, request, &response);
   if (!status.ok()) {
       std::cout << "failed" + std::to_string(status.error_code()) + ": " + status.error_message() << '\n';
   }
 
+  return status;
 }
 
 }  // namespace youtube_hermes_config_subscriber
