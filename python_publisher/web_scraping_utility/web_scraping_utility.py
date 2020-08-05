@@ -280,13 +280,13 @@ class WebScrapingUtility():
     Args:
         advanced_fields (dict): dictionary that holds all advanced fields values
     """
+    source_html = self.driver.page_source
+    soup = BeautifulSoup(source_html, "html.parser")
     try:
       show_all = self.driver.find_element_by_id("bv2-issue-metadata-list-4-more")
       show_all.click()
       show_all = self.driver.find_element_by_id("bv2-issue-metadata-list-5-more")
       show_all.click()
-      source_html = self.driver.page_source
-      soup = BeautifulSoup(source_html, "html.parser")
     except common.exceptions.NoSuchElementException:
       pass
 

@@ -66,3 +66,8 @@ bazel.iml
 # User-specific .bazelrc
 */user.bazelrc
 user.bazelrc
+
+python_subscriber/impact_analysis_response_pb2.py
+python_subscriber/config_change_pb2.py
+python_publisher/config_change_request/config_change_pb2.py
+
