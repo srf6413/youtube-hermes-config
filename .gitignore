@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 
 # Ignore IDE files
 /.vscode/
+=======
+# Ignore log files
+*.log
+
+# Ignore proto generated files
+config_change_request/config_change_pb2.py
+>>>>>>> cec7816f2935823b84afaffa56b83e4a3106f786
 
 # Environments
 .env
@@ -64,3 +72,8 @@ bazel.iml
 # User-specific .bazelrc
 */user.bazelrc
 user.bazelrc
+
+python_subscriber/impact_analysis_response_pb2.py
+python_subscriber/config_change_pb2.py
+python_publisher/config_change_request/config_change_pb2.py
+

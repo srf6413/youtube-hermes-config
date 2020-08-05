@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x13\x63onfig_change.proto\"\xc0\x01\n\x13\x43onfigChangeRequest\x12&\n\renqueue_rules\x18\x01 \x01(\x0b\x32\r.EnqueueRulesH\x00\x12*\n\x0frouting_targets\x18\x02 \x01(\x0b\x32\x0f.RoutingTargetsH\x00\x12 \n\nqueue_info\x18\x03 \x01(\x0b\x32\n.QueueInfoH\x00\x12\x13\n\x0b\x63onfig_type\x18\x04 \x01(\t\x12\x10\n\x08issue_id\x18\x05 \x01(\tB\x0c\n\nConfigType\"\x94\x01\n\x0c\x45nqueueRules\x12%\n\x07\x63hanges\x18\x06 \x03(\x0b\x32\x14.EnqueueRules.Change\x1a]\n\x06\x43hange\x12\x0e\n\x06method\x18\x01 \x01(\t\x12\x10\n\x08reporter\x18\x02 \x01(\t\x12\r\n\x05queue\x18\x03 \x01(\t\x12\x10\n\x08\x66\x65\x61tures\x18\x04 \x03(\t\x12\x10\n\x08priority\x18\x05 \x01(\x05\"\xa1\x02\n\x0eRoutingTargets\x12*\n\x08severity\x18\x01 \x01(\x0e\x32\x18.RoutingTargets.Severity\x12\x10\n\x08\x66ound_in\x18\x02 \x03(\t\x12\x0f\n\x07in_prod\x18\x03 \x01(\x08\x12\x10\n\x08reporter\x18\x04 \x01(\t\x12\x10\n\x08verifier\x18\x05 \x01(\t\x12\x13\n\x0btargeted_to\x18\x06 \x03(\t\x12\x10\n\x08queue_id\x18\x07 \x01(\x03\x12\x1e\n\x16\x61\x64\x64_queues_to_route_to\x18\x08 \x03(\x03\x12!\n\x19remove_queues_to_route_to\x18\t \x03(\x03\"2\n\x08Severity\x12\x06\n\x02S0\x10\x00\x12\x06\n\x02S1\x10\x01\x12\x06\n\x02S2\x10\x02\x12\x06\n\x02S3\x10\x03\x12\x06\n\x02S4\x10\x04\"\xd6\x03\n\tQueueInfo\x12%\n\x08severity\x18\x01 \x01(\x0e\x32\x13.QueueInfo.Severity\x12\x10\n\x08\x66ound_in\x18\x02 \x03(\t\x12\x0f\n\x07in_prod\x18\x03 \x01(\x08\x12\x10\n\x08reporter\x18\x04 \x01(\t\x12\x10\n\x08verifier\x18\x05 \x01(\t\x12\x13\n\x0btargeted_to\x18\x06 \x03(\t\x12\x10\n\x08queue_id\x18\x07 \x01(\x03\x12\x16\n\x0emdb_group_name\x18\x08 \x01(\t\x12\x11\n\tops_owner\x18\t \x01(\t\x12\x11\n\tgvo_owner\x18\n \x01(\t\x12\x12\n\ntech_owner\x18\x0b \x01(\t\x12\x1a\n\x12is_dashboard_queue\x18\x0c \x01(\x08\x12\x18\n\x10reviews_per_item\x18\r \x01(\x03\x12\x15\n\rfragment_name\x18\x0e \x01(\t\x12\x17\n\x0fitem_expiry_sec\x18\x0f \x01(\x03\x12&\n\x1eis_experimental_review_enabled\x18\x10 \x01(\x08\x12 \n\x18\x65xperimental_probability\x18\x11 \x01(\x03\"2\n\x08Severity\x12\x06\n\x02S0\x10\x00\x12\x06\n\x02S1\x10\x01\x12\x06\n\x02S2\x10\x02\x12\x06\n\x02S3\x10\x03\x12\x06\n\x02S4\x10\x04\x62\x06proto3')
+  serialized_pb=_b('\n\x13\x63onfig_change.proto\"\xae\x01\n\x13\x43onfigChangeRequest\x12&\n\renqueue_rules\x18\x01 \x01(\x0b\x32\r.EnqueueRulesH\x00\x12*\n\x0frouting_targets\x18\x02 \x01(\x0b\x32\x0f.RoutingTargetsH\x00\x12 \n\nqueue_info\x18\x03 \x01(\x0b\x32\n.QueueInfoH\x00\x12\x13\n\x0b\x63onfig_type\x18\x04 \x01(\tB\x0c\n\nConfigType\"\x94\x01\n\x0c\x45nqueueRules\x12%\n\x07\x63hanges\x18\x06 \x03(\x0b\x32\x14.EnqueueRules.Change\x1a]\n\x06\x43hange\x12\x0e\n\x06method\x18\x01 \x01(\t\x12\x10\n\x08reporter\x18\x02 \x01(\t\x12\r\n\x05queue\x18\x03 \x01(\t\x12\x10\n\x08\x66\x65\x61tures\x18\x04 \x03(\t\x12\x10\n\x08priority\x18\x05 \x01(\x05\"\xa1\x02\n\x0eRoutingTargets\x12*\n\x08severity\x18\x01 \x01(\x0e\x32\x18.RoutingTargets.Severity\x12\x10\n\x08\x66ound_in\x18\x02 \x03(\t\x12\x0f\n\x07in_prod\x18\x03 \x01(\x08\x12\x10\n\x08reporter\x18\x04 \x01(\t\x12\x10\n\x08verifier\x18\x05 \x01(\t\x12\x13\n\x0btargeted_to\x18\x06 \x03(\t\x12\x10\n\x08queue_id\x18\x07 \x01(\x03\x12\x1e\n\x16\x61\x64\x64_queues_to_route_to\x18\x08 \x03(\x03\x12!\n\x19remove_queues_to_route_to\x18\t \x03(\x03\"2\n\x08Severity\x12\x06\n\x02S0\x10\x00\x12\x06\n\x02S1\x10\x01\x12\x06\n\x02S2\x10\x02\x12\x06\n\x02S3\x10\x03\x12\x06\n\x02S4\x10\x04\"\xd6\x03\n\tQueueInfo\x12%\n\x08severity\x18\x01 \x01(\x0e\x32\x13.QueueInfo.Severity\x12\x10\n\x08\x66ound_in\x18\x02 \x03(\t\x12\x0f\n\x07in_prod\x18\x03 \x01(\x08\x12\x10\n\x08reporter\x18\x04 \x01(\t\x12\x10\n\x08verifier\x18\x05 \x01(\t\x12\x13\n\x0btargeted_to\x18\x06 \x03(\t\x12\x10\n\x08queue_id\x18\x07 \x01(\x03\x12\x16\n\x0emdb_group_name\x18\x08 \x01(\t\x12\x11\n\tops_owner\x18\t \x01(\t\x12\x11\n\tgvo_owner\x18\n \x01(\t\x12\x12\n\ntech_owner\x18\x0b \x01(\t\x12\x1a\n\x12is_dashboard_queue\x18\x0c \x01(\x08\x12\x18\n\x10reviews_per_item\x18\r \x01(\x03\x12\x15\n\rfragment_name\x18\x0e \x01(\t\x12\x17\n\x0fitem_expiry_sec\x18\x0f \x01(\x03\x12&\n\x1eis_experimental_review_enabled\x18\x10 \x01(\x08\x12 \n\x18\x65xperimental_probability\x18\x11 \x01(\x03\"2\n\x08Severity\x12\x06\n\x02S0\x10\x00\x12\x06\n\x02S1\x10\x01\x12\x06\n\x02S2\x10\x02\x12\x06\n\x02S3\x10\x03\x12\x06\n\x02S4\x10\x04\x62\x06proto3')
 )
 
 
@@ -54,8 +54,8 @@ _ROUTINGTARGETS_SEVERITY = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=609,
-  serialized_end=659,
+  serialized_start=591,
+  serialized_end=641,
 )
 _sym_db.RegisterEnumDescriptor(_ROUTINGTARGETS_SEVERITY)
 
@@ -88,8 +88,8 @@ _QUEUEINFO_SEVERITY = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=609,
-  serialized_end=659,
+  serialized_start=591,
+  serialized_end=641,
 )
 _sym_db.RegisterEnumDescriptor(_QUEUEINFO_SEVERITY)
 
@@ -129,13 +129,6 @@ _CONFIGCHANGEREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='issue_id', full_name='ConfigChangeRequest.issue_id', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -152,7 +145,7 @@ _CONFIGCHANGEREQUEST = _descriptor.Descriptor(
       index=0, containing_type=None, fields=[]),
   ],
   serialized_start=24,
-  serialized_end=216,
+  serialized_end=198,
 )
 
 
@@ -210,8 +203,8 @@ _ENQUEUERULES_CHANGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=274,
-  serialized_end=367,
+  serialized_start=256,
+  serialized_end=349,
 )
 
 _ENQUEUERULES = _descriptor.Descriptor(
@@ -240,8 +233,8 @@ _ENQUEUERULES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=219,
-  serialized_end=367,
+  serialized_start=201,
+  serialized_end=349,
 )
 
 
@@ -328,8 +321,8 @@ _ROUTINGTARGETS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=370,
-  serialized_end=659,
+  serialized_start=352,
+  serialized_end=641,
 )
 
 
@@ -472,8 +465,8 @@ _QUEUEINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=662,
-  serialized_end=1132,
+  serialized_start=644,
+  serialized_end=1114,
 )
 
 _CONFIGCHANGEREQUEST.fields_by_name['enqueue_rules'].message_type = _ENQUEUERULES
