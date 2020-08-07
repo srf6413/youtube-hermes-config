@@ -43,6 +43,7 @@ class GraphAnalysis():
 		matplotlib.use('tkagg')
 
 		for queue_impact in queue_impact_list:
+    # TODO(ballah): i variable used to insure the queue_id property is valid, and will be cleaned up later.
 			i += 1
 			queue_id = queue_impact.queue_id or i
 			data["Desired SLA"][queue_id] = queue_impact.desired_SLA_min
@@ -52,13 +53,10 @@ class GraphAnalysis():
 		data_frame = pd.DataFrame(data)
 		a_x = data_frame.plot(kind='bar')
 
-		# Set the y axis label
 		a_x.set_ylabel('SLA (minutes)')
 
-		# Set the x axis label
 		a_x.set_xlabel('Queue Id')
 
-		# Set the chart's title
 		a_x.set_title('Queue Impact Analysis')
 
 		plt.xticks(rotation=0)
