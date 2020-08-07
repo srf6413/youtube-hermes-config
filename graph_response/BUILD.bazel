@@ -44,8 +44,6 @@ py_binary(
   srcs = ["main.py"],
   deps =[
 	  "impact_proto_py",
-    # requirement("matplotlib"),
-    # requirement("pandas")
   ]
 )
 
