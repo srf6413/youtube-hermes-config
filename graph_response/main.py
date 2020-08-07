@@ -16,7 +16,7 @@ def GraphImpact(impact_analysis):
 
 	i = 0
 	for queue_impact in queue_impact_list:
-		# i variable used to insure the queue_id property is valid, and will be cleaned up later.
+		# TODO: i variable used to insure the queue_id property is valid, and will be cleaned up later.
 		i = i + 1
 		id = queue_impact.queue_id or i
 		data["Desired SLA"][id] = queue_impact.desired_SLA_min
