@@ -43,9 +43,8 @@ class GraphAnalysis():
 		matplotlib.use('tkagg')
 
 		for queue_impact in queue_impact_list:
-      # TODO(ballah): i variable used to insure the queue_id property is valid,
+			i += 1 # TODO(ballah): i variable used to insure the queue_id property is valid,
         #  and will be cleaned up later.
-			i += 1
 			queue_id = queue_impact.queue_id or i
 			data["Desired SLA"][queue_id] = queue_impact.desired_SLA_min
 			data["Previous SLA"][queue_id] = queue_impact.previous_SLA_min
