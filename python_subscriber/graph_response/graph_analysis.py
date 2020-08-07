@@ -8,13 +8,13 @@ import matplotlib
 import pandas as pd
 
 class GraphAnalysis():
-	"""Responsible for generating an impact analysis graph .png image 
+	"""Responsible for generating an impact analysis graph .png image
   from an Impact Analysis Response protobuf object.
 	"""
 
 	def compare_impact(self, queue_impact):
 		"""Sorts the queue impacts so the impacts where the new SLA is greater then
-    the desired impact or increased from the previous SLA
+    the desired impact or increased from the previous SLA.
 
 		Args:
 				queue_impact : the list of queue impacts
@@ -28,7 +28,7 @@ class GraphAnalysis():
 
 
 	def graph_impact(self, impact_analysis):
-		"""Creates the impact analysis .png and saves it to the project directory.
+		"""Creates the impact analysis png and saves it to the project directory.
 
 		Args:
 				impact_analysis (ImpactAnalsisResponse): the ImpactAnalysisResponse Protobuf object
@@ -43,7 +43,8 @@ class GraphAnalysis():
 		matplotlib.use('tkagg')
 
 		for queue_impact in queue_impact_list:
-    # TODO(ballah): i variable used to insure the queue_id property is valid, and will be cleaned up later.
+      # TODO(ballah): i variable used to insure the queue_id property is valid,
+        #  and will be cleaned up later.
 			i += 1
 			queue_id = queue_impact.queue_id or i
 			data["Desired SLA"][queue_id] = queue_impact.desired_SLA_min
@@ -54,15 +55,11 @@ class GraphAnalysis():
 		a_x = data_frame.plot(kind='bar')
 
 		a_x.set_ylabel('SLA (minutes)')
-
 		a_x.set_xlabel('Queue Id')
-
 		a_x.set_title('Queue Impact Analysis')
 
 		plt.xticks(rotation=0)
-
 		path = os.getcwd() + "/impact.png"
-
 		plt.savefig(path)
 
 		return path
