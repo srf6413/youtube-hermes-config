@@ -52,9 +52,6 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
   using google::protobuf::util::StatusOr;
   using google::protobuf::util::Status;
   using google::protobuf::util::error::Code;
-  using youtube_hermes_config_subscriber::PublishMessage;
-  using youtube_hermes_config_subscriber::getDummyImpactAnalysis;
-  using youtube_hermes_config_subscriber::getErrorImpactAnalysis;
   
   ConfigChangeRequest config_change_request;
   bool parsed_succesfully = config_change_request.ParseFromString(message.data());

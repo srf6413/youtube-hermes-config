@@ -31,11 +31,11 @@
 namespace youtube_hermes_config_subscriber {
 
 // Generates and returns a serialized Impact Analysis Response containing queue 
-std::string getDummyImpactAnalysis(const ConfigChangeRequest);
-std::string getEmptyImpactAnalysis(const ConfigChangeRequest);
-std::string getErrorImpactAnalysis(const ConfigChangeRequest, const std::string);
+std::string getDummyImpactAnalysis(const ConfigChangeRequest&);
+std::string getEmptyImpactAnalysis(const ConfigChangeRequest&);
+std::string getErrorImpactAnalysis(const ConfigChangeRequest&, const std::string&);
 
-grpc::Status PublishMessage(const std::string message_data, const std::string topic);
+grpc::Status PublishMessage(const std::string message_data&, const std::string topic&);
 
 }  // namespace youtube_hermes_config_subscriber
 

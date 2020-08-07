@@ -30,20 +30,20 @@
 
 namespace youtube_hermes_config_subscriber {
 
-std::string getErrorImpactAnalysis(const ConfigChangeRequest config_change_request, const std::string error) {
+std::string getErrorImpactAnalysis(const ConfigChangeRequest& config_change_request, const std::string& error) {
   ImpactAnalysisResponse impact_analysis;
   impact_analysis.set_allocated_request(new ConfigChangeRequest(config_change_request));
   impact_analysis.set_error_message(error);
   return impact_analysis.SerializeAsString();
 }
 
-std::string getEmptyImpactAnalysis(const ConfigChangeRequest config_change_request) {
+std::string getEmptyImpactAnalysis(const ConfigChangeRequest& config_change_request) {
   ImpactAnalysisResponse impact_analysis;
   impact_analysis.set_allocated_request(new ConfigChangeRequest(config_change_request));
   return impact_analysis.SerializeAsString();
 }
 
-std::string getDummyImpactAnalysis(const ConfigChangeRequest config_change_request) {
+std::string getDummyImpactAnalysis(const ConfigChangeRequest& config_change_request) {
   using google::protobuf::Timestamp;
 
   ImpactAnalysisResponse impact_analysis;
@@ -62,7 +62,7 @@ std::string getDummyImpactAnalysis(const ConfigChangeRequest config_change_reque
   return impact_analysis.SerializeAsString();
 }
 
-grpc::Status PublishMessage(const std::string message_data, const std::string topic) {
+grpc::Status PublishMessage(const std::string& message_data, const std::string& topic) {
   using grpc::ClientContext;
   using google::pubsub::v1::Publisher;
   using google::pubsub::v1::PublishRequest;
