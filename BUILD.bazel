@@ -17,9 +17,9 @@ package(default_visibility = ["//visibility:public"])
 licenses(["notice"])  # Apache 2.0
 
 load("@rules_proto//proto:defs.bzl", "proto_library")
+load("@rules_cc//cc:defs.bzl", "cc_proto_library")
 load("@rules_python//python:defs.bzl", "py_binary")
 load("@com_google_protobuf//:protobuf.bzl", "py_proto_library")
-load("@my_deps//:requirements.bzl", "requirement")
 
 
 py_proto_library(
@@ -39,13 +39,28 @@ py_proto_library(
     deps = ["@com_google_protobuf//:protobuf_python"],
 )
 
-py_binary(
-  name = "main",
-  srcs = ["main.py"],
-  deps =[
-	  "impact_proto_py",
-    # requirement("matplotlib"),
-    # requirement("pandas")
-  ]
+cc_proto_library(
+    name = "impact_proto_cc_proto",
+    deps = [":impact_proto"],
 )
 
+cc_proto_library(
+    name = "config_change_cc_proto",
+    deps = [":config_change_proto"],
+)
+
+
+proto_library(
+    name = "config_change_proto",
+    srcs = ["config_change.proto"],
+)
+
+proto_library(
+	visibility = ["//visibility:public"],
+    name = "impact_proto",
+    srcs = ["impact_analysis_response.proto"],
+    deps = [
+        "@com_google_protobuf//:timestamp_proto",
+        "config_change_proto"
+    ],
+)

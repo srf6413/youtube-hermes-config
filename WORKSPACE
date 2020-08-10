@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-workspace(name = "python_response")
+workspace(name = "hermes_intern")
 
 # Add the necessary Starlark functions to fetch google-cloud-cpp.
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
@@ -49,6 +49,16 @@ git_repository(
     tag = "release-1.10.0",
 )
 
+# rules_cc defines rules for generating C++ code from Protocol Buffers.
+http_archive(
+    name = "rules_cc",
+    sha256 = "35f2fb4ea0b3e61ad64a369de284e4fbbdcdba71836a5555abb5e194cf119509",
+    strip_prefix = "rules_cc-624b5d59dfb45672d4239422fa1e3de1822ee110",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_cc/archive/624b5d59dfb45672d4239422fa1e3de1822ee110.tar.gz",
+        "https://github.com/bazelbuild/rules_cc/archive/624b5d59dfb45672d4239422fa1e3de1822ee110.tar.gz",
+    ],
+)
 
 http_archive(
     name = "rules_python",
@@ -67,21 +77,12 @@ http_archive(
         "https://github.com/bazelbuild/rules_proto/archive/218ffa7dfa5408492dc86c01ee637614f8695c45.tar.gz",
     ],
 )
+load("@rules_cc//cc:repositories.bzl", "rules_cc_dependencies")
+rules_cc_dependencies()
 
-load("@rules_python//python:pip.bzl", "pip_import")
 
-# Create a central repo that knows about the dependencies needed for
-# requirements.txt.
-pip_import(   # or pip3_import
-   name = "my_deps",
-   requirements = "//:requirements.txt",
-)
-
-# Load the central repo's install function from its `//:requirements.bzl` file,
-# and call it.
-load("@my_deps//:requirements.bzl", "pip_install")
-pip_install()
-
+load("@rules_python//python:pip.bzl", "pip_repositories")
+pip_repositories()
 
 load("@rules_proto//proto:repositories.bzl", "rules_proto_dependencies", "rules_proto_toolchains")
 rules_proto_dependencies()
