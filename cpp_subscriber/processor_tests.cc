@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "proto/config_change.pb.h"
+#include "config_type.pb.h"
 #include "gtest/gtest.h"
 #include "mock_message.h"
 #include "processor.h"

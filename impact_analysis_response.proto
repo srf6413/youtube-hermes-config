@@ -1,5 +1,4 @@
 syntax = "proto3";
-import "google/protobuf/timestamp.proto";
 import "config_change.proto";
 
 message QueueImpactAnalysis {
@@ -10,8 +9,8 @@ message QueueImpactAnalysis {
   int32 previous_avg_video_volume_per_hour = 5; // The Volume of video traffic (Videos/Hour) before the configuration changes.
   int32 new_avg_video_volume_per_hour = 6;
 
-  google.protobuf.Timestamp analysis_period_start = 7; // The starting time stamp for time period the impact analysis was evaluated for.
-  google.protobuf.Timestamp analysis_period_end = 8; // The ending time stamp for time period the impact analysis was evaluated for.
+  Timestamp analysis_period_start = 7; // The starting time stamp for time period the impact analysis was evaluated for.
+  Timestamp analysis_period_end = 8; // The ending time stamp for time period the impact analysis was evaluated for.
 }
 
 message ImpactAnalysisResponse {
