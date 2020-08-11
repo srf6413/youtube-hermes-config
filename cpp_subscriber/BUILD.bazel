@@ -20,25 +20,18 @@ load("@rules_proto//proto:defs.bzl", "proto_library")
 load("@rules_cc//cc:defs.bzl", "cc_binary", "cc_proto_library")
 load("@com_github_grpc_grpc//bazel:cc_grpc_library.bzl", "cc_grpc_library")
 
-cc_proto_library(
-    name = "config_type_cc_proto",
-    deps = [":config_type_proto"],
-)
-proto_library(
-    name = "config_type_proto",
-    srcs = ["config_type.proto"],
-)
-
-
 cc_library(
   name = "subscriber-lib",
-  srcs = ["client.cc", "mock_message.cc"],
-  hdrs = ["client.h", "processor.h", "mock_message.h"],
+  srcs = ["client.cc", "mock_message.cc", "proto/config_change.pb.cc", "proto/impact_analysis_response.pb.cc", "publisher.cc"],
+  hdrs = ["client.h", "processor.h", "publisher.h", "mock_message.h", "proto/config_change.pb.h", "proto/impact_analysis_response.pb.h"],
+  # srcs = ["client.cc", "mock_message.cc"],
+  # hdrs = ["client.h", "processor.h", "publisher.h", "mock_message.h"],
   deps = [
     "@com_github_grpc_grpc//:grpc++",
     "@com_google_googleapis//google/pubsub/v1:pubsub_cc_grpc",
-	"@com_google_absl//absl/strings",
-	":config_type_cc_proto",
+	  "@com_google_absl//absl/strings",
+    # ":config_change_cc_proto",
+    # ":impact_proto_cc_proto"
   ],
 )
 
@@ -55,6 +48,33 @@ cc_test(
   ],
 )
 
+cc_proto_library(
+    name = "impact_proto_cc_proto",
+    deps = [":impact_proto"],
+)
+
+cc_proto_library(
+    name = "config_change_cc_proto",
+    deps = [":config_change_proto"],
+)
+
+
+proto_library(
+  visibility = ["//visibility:public"],
+  name = "config_change_proto",
+  srcs = ["proto/config_change.proto"],
+)
+
+proto_library(
+	visibility = ["//visibility:public"],
+    name = "impact_proto",
+    srcs = ["proto/impact_analysis_response.proto"],
+    deps = [
+        "@com_google_protobuf//:timestamp_proto",
+        "config_change_proto"
+    ],
+)
+
 cc_binary(
   name = "main",
   srcs = [
@@ -62,6 +82,5 @@ cc_binary(
   ],
   deps = [
     ":subscriber-lib",
-    ":config_type_cc_proto"
   ],
 )
