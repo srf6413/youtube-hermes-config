@@ -16,7 +16,6 @@ class System():
   def __init__(self):
     logger = logs.logger.Logger()
     self.web_scraping_util = web_scraping_utility.WebScrapingUtility(logger)
-    self.queue = []
     self.set = set()
 
 
