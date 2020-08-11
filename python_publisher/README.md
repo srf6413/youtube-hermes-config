@@ -1,28 +1,95 @@
-# Buganizer Scraper
+# YouTube Hermes Config Automation
 
-## **Overview:**
-Once running, this subsystem constantly iterates through various issues under a configuration type, and attempts to scrape data from any issue possible. The way that this automation will be controlled is through a special automation user. Upon creation of the Buganizer issue, it will be assigned to this automation user eg. 'hermesautomationuser@google.com'. As the system iterates through issues and comes across an issue that is open and assigned to the automation user, it will scrape all of its change request data. It will then put the change request data inside of a protobuf object (config_change.proto) that will hold all necessary fields depending on the configuration change type. Once this proto is created, it will be deserialized and published in a Pub/Sub message. The backend will pull these messages where they will be processed.
- <br/><br/>
+## **Project Goal:**
+*Replace the YouTube Hermes configuration tools with Buganizer driven automation.* <br/><br/>
 
+## Functionality:<br/>
+Running this program will continuously scrape all Buganizer issues under a specified componentid, looking for valid templates in the reporter's comments on each issue. If a template is valid, it will then be parsed into a Protocol Buffer object, serialized and published in a Pub/Sub message through the specified topic.<br/><br/>
+
+**Setup Instructions:**
+-------------------------------------------------------------------------------
+
+**Authentication:**
+
+This program requires authentication to be setup. Refer to the
+`Authentication Getting Started Guide` for instructions on how to set up
+credentials for applications.
+
+*Authentication Getting Started Guide:*
+    https://cloud.google.com/docs/authentication/getting-started
+    
+<br/>
+
+**Install Dependencies**
+
+1. Clone the project repository in whatever directory you want to use.
+
+        $ git clone https://github.com/viktries-google/youtube-hermes-config
+        
+2. Install `pip` and `virtualenv`. Refer to `Python Development Environment Setup Guide` for Google Cloud Platform for instructions.
+
+   *Python Development Environment Setup Guide:* https://cloud.google.com/python/setup
+
+3. Create a virtualenv. For more info: https://virtualenv.pypa.io/
+
+        $ virtualenv env
+        $ source env/bin/activate
+
+4. Install the dependencies needed to run the program. For more info: https://pip.pypa.io/
+
+        $ pip install bs4
+        $ pip install --upgrade google-cloud-pubsub
+        $ pip install selenium
+        
+**Set Environment Variables**
+
+        $ export PROJECT='[PROJECT_ID]'
+        $ export GOOGLE_APPLICATION_CREDENTIALS=~=/Downloads/[SERVICE_ACCOUNT_JSON_KEY]
+    
+**Set up Protocol Buffer**
+
+ First view instructions and download the protocol buffer compiler at : https://developers.google.com/protocol-buffers
+ 
+
+        $ cd publisher/config_change_request
+        $ protoc -I=. --python_out=. ./config_change.proto
+
+
+
+
+**Download Chrome Driver:**<br/>
+Download the Chromedriver here https://chromedriver.chromium.org/downloads to whatever directory you would like.
+
+
+
+
+<br/>
+<br/>
 
 **Configuration**
 -------------------------------------------------------------------------------
 
 **Edit constants.py:**<br/>
-PROJECT_ID: *The Project ID from GCP*<br/>
-TOPIC_NAME: *The name of the Pub/Sub Topic* <br/>
-URL: *The URL containing one or more Buganizer issues under a componentid.*<br/>
-PROJECT_PATH: *Path to the root directory of the project.* <br/>
-DRIVER_PATH: *Path to the Chromedriver.*<br/>
-PROFILE_PATH: *Path to the Chrome profile you would like to use. Visit chrome://version if you are unsure.*<br/>
-CONFIGURATION_SPECIFIER: *The specifier for all templates for the configuration type. Default = 'Configuration: '*<br/>
-METHOD_SPECIFIER: *The EnqueueRules template's specifier for method. Default = 'Method'*<br/>
-POSSIBLE_METHODS: *The EnqueueRules template's possible methods. Default = 'Add', 'Remove', or 'Set'*<br/>
-QUEUE_SPECIFIER: *The EnqueueRules template's specifier for queue. Default = 'Queue: '*<br/>
-ENQUEUE_RULE_COMMAND_LINES_COUNT: *The EnqueueRules template's number of command specifiers. Every line except Configuration. Default = 4*<br/>
-ENQUEUE_RULE_FEATURES_SPECIFIER: *The EnqueueRules template's specifier for features. Default = 'Features: '*<br/>
-ENQUEUE_RULE_PRIORITY_SPECIFIER: *The EnqueueRules template's specifier for priority. Default = 'Priority: '*<br/>
-AUTOMATION_USER: *The special automation user that controls automation.*<br/>
+Project ID: *The Project ID of the Project*<br/>
+Pub/Sub Topic Name: *The name of the Pub/Sub Topic* <br/>
+Buganizer Url: *The URL containing one or more Buganizer issues under a componentid.*<br/>
+Path to project: *Path to the root directory of your project.* <br/>
+Path to Chrome driver: *Path to the Chromedriver.*<br/>
+Path to Chrome profile: *Path to the Chrome profile you would like to use. Visit chrome://version if you are unsure*<br/>
+Configuration Specifier: *The specifier for all templates for the configuration type. Default = 'Configuration: '*<br/>
+EnqueueRule Commands Count: *The number of nessary arguments for a EnqueueRule Change Request. Default = 4*<br/>
+EnqueueRule Method Specifier: *The EnqueueRule template's specifier for method. Default = 'Method: '*<br/>
+EnqueueRule Queue Specifier: *The EnqueueRule template's specifier for queue. Default = 'Queue: '*<br/>
+EnqueueRule Features Specifier: *The EnqueueRule template's specifier for features. Default = 'Features: '*<br/>
+EnqueueRule Priority Specifier: *The EnqueueRule template's specifier for priority. Default = 'Priority: '*<br/>
+RoutingRule Commands Count: *The number of nessary arguments for a RoutingRule Change Request. Default = 3*<br/>
+RoutingRule Method Specifier: *The RoutingRule template's specifier for method. Default = 'Method: '*<br/>
+RoutingRule Queue Specifier: *The RoutingRule template's specifier for queue. Default = 'Queue: '*<br/>
+RoutingRule Possible-Routes Specifier: *The RoutingRule template's specifier for possible routes. Default = 'Possible-Routes: '*<br/>
+QueueInfo Commands Count: *The number of nessary arguments for a QueueInfo Change Request. Default = 3*<br/>
+QueueInfo Method Specifier: *The QueueInfoe template's specifier for method. Default = 'Method: '*<br/>
+QueueInfo Queue Specifier: *The QueueInfo template's specifier for queue. Default = 'Queue: '*<br/>
+QueueInfo Owners Specifier: *The QueueInfo template's specifier for owners. Default = 'Owners: '*<br/>
 
 **Run**
 -------------------------------------------------------------------------------
