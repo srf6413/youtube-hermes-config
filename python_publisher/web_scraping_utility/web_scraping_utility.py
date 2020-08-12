@@ -4,7 +4,6 @@
 import time
 from bs4 import BeautifulSoup
 from selenium import webdriver, common
-from selenium.webdriver.common.keys import Keys
 from message_parsing_utility import message_parsing_utility
 import constants
 
@@ -81,8 +80,7 @@ class WebScrapingUtility():
     if "Buganizer" not in page_title or "componentid" not in page_title:
       if "MOMA Single Sign On" in page_title:
         error_message = "ERROR: You must log into your MOMA account "\
-        "first. Select the 'Use Security Code' option and generate a security code at go/sc.\n"\
-          "Once you are logged in, close the browser and re-reun main.py\n"
+        "first. Select the 'Use Security Code' option and generate a security code at go/sc.\n"
         self.logger.log(error_message)
 
         while "Buganizer" not in page_title:
@@ -349,4 +347,3 @@ class WebScrapingUtility():
       advanced_fields[queue_id[0]] = int(queue_id[1])
 
     self._message_parsing_util.publish_buganizer_fields(advanced_fields)
-

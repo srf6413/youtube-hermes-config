@@ -132,8 +132,8 @@ class WebScrapingUtility():
     """
     status_button = self.driver.find_element_by_xpath("/html/body/b-service-bootstrap/app-root/"\
       "div[7]/div/div/edit-issue-page/b-resolving-issue-references/div[2]/div[1]/div[3]/"\
-        "b-resizable-sidebar/div/div[1]/div/div/span/span/div/div[1]/div[1]/div[2]/div[1]"\
-          "/truncated-span/span")
+        "b-resizable-sidebar/div/div[1]/div/div/span/span/div/div[1]/div[1]/div[2]/div[1]/"\
+          "truncated-span/span")
     return status_button.text
 
   def get_issue_assignee(self):
