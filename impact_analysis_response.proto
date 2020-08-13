@@ -27,6 +27,6 @@ message ImpactAnalysisResponse {
   string error_message = 1;
   // The list of affected queues and details on the impact analysis for the queues.
   repeated QueueImpactAnalysis queue_Impact_analysis_list = 2;
-  // The original ConfigChangeRequest object that the analysis is based on. 
+  // The original ConfigChangeRequest object that the analysis is based on.
   ConfigChangeRequest request = 3;
 }
