@@ -40,8 +40,7 @@ const int kSecondsToKeepClientAlive = 1200;
 
 int main() {
 
-  // Creates a Client that polls pubsub and Runs it 
-  // passing the MessageProcessor function as a callback.
+  // Creates a Client that polls Pub/Sub for messages and passes them to the MessageProcessor.
   using google::pubsub::v1::PubsubMessage;
   using youtube_hermes_config_subscriber::Client;
   using youtube_hermes_config_subscriber::MessageProcessor;
@@ -49,7 +48,11 @@ int main() {
   Client client = Client(kSubscriptionsLink);
   client.Run(MessageProcessor<PubsubMessage>);
 
-  // Join the thread from the client in order to keep the program running.
+  // Currently it takes around 30 seconds for the stream object in the client 
+  // to close after calling the Stop() method.
+  // We will not need to call Stop in production, as the client will run indefinitely.
+  client.Stop();
+  
   client.JoinThread();
   std::cout << "Program Terminating" << std::endl;
   return 0;

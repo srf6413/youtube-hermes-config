@@ -44,8 +44,7 @@ const char kPublisherTopicLink[] = "projects/google.com:youtube-admin-pacing-ser
 
 // MessageProcessor Templated function.
 // Message class should be a `MockMessage` or `google::pubsub::v1::PubsubMessage`.
-// This function logs the contents of message if
-// and return the deserialized message object.
+// This function logs the contents of messages if possible, and returns the deserialized protobuf object.
 template <class Message>
 google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message const& message) {
   using google::protobuf::Map;
@@ -56,7 +55,7 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
   ConfigChangeRequest config_change_request;
   bool parsed_succesfully = config_change_request.ParseFromString(message.data());
 
-  // If parsing fails log error and a Invalid status
+  // If parsing fails, log error and return invalid status.
   if (!parsed_succesfully) {
     std::cout << std::endl << kParsingFailedWarning << std::endl;
     std::cout << "message.data(): " << message.data() << std::endl;
@@ -64,19 +63,25 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
   }
 
   std::cout << std::endl << kSuccessfulParsingMessage << std::endl;
-  std::cout << config_change_request.DebugString() << std::endl;
-
-  if (config_change_request.has_enqueue_rules()) {
-    PublishMessage(getDummyImpactAnalysis(config_change_request), kPublisherTopicLink);
-  }
-  else if (config_change_request.has_routing_targets()) {
-    // Ensure that the routing targets is specifiying targets to add, or remove.
-    if ((config_change_request.routing_targets().add_queues_to_route_to_size() + 
-        config_change_request.routing_targets().remove_queues_to_route_to_size()) == 0) {
-      // There are no queues to add or remove, therefore this is an invalid request.
-      // Publish message with a error message & return an invalid status;
-      PublishMessage(getErrorImpactAnalysis(config_change_request, kNoRoutingTargets), kPublisherTopicLink);
-      return Status(Code::INVALID_ARGUMENT, kNoRoutingTargets); // TODO change state constat to proper error
+  
+  // Log the change request, depending on the type.
+  if (config_change_request.has_enqueue_rule()) {
+    // Log each EnqueueRule change.
+    std::cout << kEnqueueRuleHeader << std::endl;
+    for (const auto& change : config_change_request.enqueue_rule().changes()) {
+      std::cout << change.DebugString() << std::endl;
+    }
+  } else if (config_change_request.has_routing_rule()) {
+    // Log each RoutingRule change.
+    std::cout << kRoutingRuleHeader << std::endl;
+    for (const auto& change : config_change_request.routing_rule().changes()) {
+      std::cout << change.DebugString() << std::endl;
+    }
+  } else if (config_change_request.has_queue_info()) {
+    // Log each QueueInfo change.
+    std::cout << kQueueInfoHeader << std::endl;
+    for (const auto& change : config_change_request.queue_info().changes()) {
+      std::cout << change.DebugString() << std::endl;
     }
     PublishMessage(getDummyImpactAnalysis(config_change_request), kPublisherTopicLink);
   }

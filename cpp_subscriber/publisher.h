@@ -30,7 +30,7 @@
 
 namespace youtube_hermes_config_subscriber {
 
-// Generates and returns a serialized Impact Analysis Response containing queue 
+// Generates and returns a serialized Impact Analysis Response protobuf object.
 std::string getDummyImpactAnalysis(const ConfigChangeRequest&);
 std::string getEmptyImpactAnalysis(const ConfigChangeRequest&);
 std::string getErrorImpactAnalysis(const ConfigChangeRequest&, const std::string&);
