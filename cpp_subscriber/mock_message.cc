@@ -17,13 +17,14 @@
 #include <string>
 
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
-#include "config_type.pb.h"
+#include "proto/config_change.pb.h"
 
 namespace youtube_hermes_config_subscriber {
 
 MockMessage::MockMessage(ConfigChangeRequest const& config) {
   config.SerializeToString(&data_);
 }
+
 std::string MockMessage::data() const {
   return data_;
 }

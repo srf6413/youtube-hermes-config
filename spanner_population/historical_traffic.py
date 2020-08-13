@@ -45,7 +45,7 @@ class HistoricalTraffic():
 
       owners = ["owner" + str(i) + "@google.com"]
 
-      possible_routes = random.sample(range(constants.POSSIBLE_ROUTES_COUNT),
+      possible_routes = random.sample(range(constants.ROW_COUNT),
                                       random.randint(0, constants.MAX_POSSIBLE_ROUTES))
       for j, item in enumerate(possible_routes):
         possible_routes[j] = str(item)
