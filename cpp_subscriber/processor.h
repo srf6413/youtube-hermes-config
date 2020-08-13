@@ -22,9 +22,11 @@
 #include <thread>
 #include <vector>
 
-#include "config_type.pb.h"
+#include "proto/config_change.pb.h"
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 #include "absl/strings/string_view.h"
+
+#include "publisher.h"
 
 namespace youtube_hermes_config_subscriber {
 
@@ -34,9 +36,11 @@ typedef google::protobuf::util::StatusOr<ConfigChangeRequest> MessageCallback(go
 const char kInvalidConfigurationWarning[] = "Invalid ConfigChangeRequest Object. ConfigChangeRequest must have oneof (enqueue_rule, routing_rule, queue_info)";
 const char kParsingFailedWarning[] = "Failed to parse ConfigChangeRequest Object from String";
 const char kSuccessfulParsingMessage[] = "Successfully parsed ConfigChangeRequest from message";
+const char kNoRoutingTargets[] = "There are no routing targets to add or remove. Please specify route_to targets to ADD or REMMOVE";
 const char kEnqueueRuleHeader[] = "-- Enqueue Rule --";
 const char kRoutingRuleHeader[] = "-- Routing Rule --";
 const char kQueueInfoHeader[] = "-- Queue Info --";
+const char kPublisherTopicLink[] = "projects/google.com:youtube-admin-pacing-server/topics/TestImpactAnalysisResponse";
 
 // MessageProcessor Templated function.
 // Message class should be a `MockMessage` or `google::pubsub::v1::PubsubMessage`.
@@ -47,7 +51,7 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
   using google::protobuf::util::StatusOr;
   using google::protobuf::util::Status;
   using google::protobuf::util::error::Code;
-
+  
   ConfigChangeRequest config_change_request;
   bool parsed_succesfully = config_change_request.ParseFromString(message.data());
 
@@ -79,12 +83,12 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
     for (const auto& change : config_change_request.queue_info().changes()) {
       std::cout << change.DebugString() << std::endl;
     }
-  } else {
-    // Log Invalid Configuration Warning.
-    std::cout << kInvalidConfigurationWarning << std::endl;
-    return Status(Code::INVALID_ARGUMENT, kInvalidConfigurationWarning);
+    PublishMessage(getDummyImpactAnalysis(config_change_request), kPublisherTopicLink);
   }
-  
+  else if (config_change_request.has_queue_info()) {
+    PublishMessage(getEmptyImpactAnalysis(config_change_request), kPublisherTopicLink);
+  }
+
   return config_change_request;
 }
 

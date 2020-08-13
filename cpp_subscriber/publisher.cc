@@ -88,7 +88,6 @@ grpc::Status PublishMessage(const std::string& message_data, const std::string& 
   ClientContext clientContext;
 
   grpc::Status status = stub->Publish(&clientContext, request, &response);
-
   if (!status.ok()) {
       std::cout << "failed" + std::to_string(status.error_code()) + ": " + status.error_message() << '\n';
   }
