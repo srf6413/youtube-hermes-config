@@ -5,10 +5,56 @@ The objective of this system is to replace preexisting YouTube Hermes configurat
 
 ## Overview:<br/>
 With the new system, Eng/Ops members and vendor management personnel are able to create and edit Pacing system configuration change requests from the familiar Buganizer UI, instead of using the old QueueConfiguration UI.
-Users will start from either the EnqueueRules UI, the RoutingTargetsUI or the QueueInfo UI. When they choose a configuration that they would like to change, a new Buganizer issue draft is opened with the pre-existing configuration data already filled out. They then just have to change the fields that they would like to change and then create the bug.<br/><br/>
-Once the bug is created, the request is automatically sent to CAT where it is processed and compared to historical traffic data, and an impact analysis response is generated. If the request was invalid, Buganizer receives and prints a message detailing why the change request was invalid.  If the request was valid, then an impact analysis graph is created and included along with a detailed response of the impact that these changes will have. If applicable, anyone listed under the CC field will be notified of the change.
-<br/> <br/>
+Users will start from either the EnqueueRules UI, the RoutingTargetsUI or the QueueInfo UI. When they choose a configuration that they would like to change, a new Buganizer issue draft is opened with the pre-existing configuration data already filled out. They then just have to change the fields that they would like to change and then create the bug.<br/> <br/>
+Here are the fields common to each configuration type:<br/>
+* Title<br/>
+* Priority<br/>
+* Type<br/>
+* Assignee<br/>
+* CC<br/>
+* Description<br/>
+* Severity<br/>
+* Found in <br/>
+* In prod<br/>
+* Reporter<br/>
+* Verifier<br/>
+* Targeted to<br/>
+* Blocked by<br/>
+* Blocking<br/>
 
+And here are the unique advanced fields for each configuration type:<br/>
+
+#### Enqueue Rules<br/>
+* Certified By<br/>
+* Discovered on<br/>
+* Effort Days<br/>
+* Effort Obsolete<br/>
+* Impact Statement<br/>
+* In PRD<br/>
+* Stack Rank<br/>
+* Start Date<br/>
+* Target Date<br/>
+
+#### Routing Targets<br/>
+* Queue Id<br/>
+* Add Queues to Route To<br/>
+* Remove Queues to Route To<br/>
+* Queue Info<br/>
+* Queue Id<br/>
+* MDB group name<br/>
+* Ops Owner<br/>
+* GVO Owner<br/>
+* Tech Owner<br/>
+* Is Dashboard Queue<br/>
+* Reviews per Item<br/>
+* Fragment Name<br/>
+* Item Expiry (Min)<br/>
+* Is Experimental Review Enabled<br/>
+* Experimental Probability<br/>
+
+
+Once the bug is created, the request is automatically sent to the backend where it is processed and compared to historical traffic data, and an impact analysis response is generated. If the request was invalid, Buganizer receives and prints a message detailing why the change request was invalid.  If the request was valid, then an impact analysis graph is created and included along with a detailed response of the impact that these changes will have. If applicable, anyone listed under the CC field will be notified of the change.
+<br/><br/>
 
 **Setup Instructions:**
 -------------------------------------------------------------------------------
@@ -30,31 +76,25 @@ credentials for applications.
 
         $ git clone https://github.com/viktries-google/youtube-hermes-config
         
-2. Install the latest version of Python, as well as pip. Refer to `Python Development Environment Setup Guide` for Google Cloud Platform for further instructions.
+2. Install `pip` and `virtualenv`. Refer to `Python Development Environment Setup Guide` for Google Cloud Platform for instructions.
 
    *Python Development Environment Setup Guide:* https://cloud.google.com/python/setup
 
-        $ sudo apt update
-        $ sudo apt install python3 python3-dev python3-venv
-        $ wget https://bootstrap.pypa.io/get-pip.py
-        $ sudo python3 get-pip.py
-        $ pip --version
+   TODO: Include the commands to install these
 
 3. Create a virtualenv. For more info: https://virtualenv.pypa.io/
 
-        $ cd your-project
-        $ python3 -m venv venv
+        $ virtualenv env
         $ source env/bin/activate
 
 4. Install the dependencies needed to run the program. For more info: https://pip.pypa.io/
 
         $ pip install bs4
         $ pip install --upgrade google-cloud-pubsub
-        $ pip install --upgrade google-cloud-spanner
         $ pip install selenium
-        $ pip install matplotlib
-        $ pip install pandas
 
+TODO: add any more necessary dependencies
+        
 **Set Environment Variables**
 
         $ export PROJECT='[PROJECT_ID]'
