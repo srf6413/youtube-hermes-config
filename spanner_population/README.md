@@ -21,7 +21,7 @@ This data is populated in a way that ensures maximum randomness, while simulatin
  <br/><br/>
 
 ## Functionality:<br/>
-Running this program will clear all entries previously existing in all tables, and then fill all tables with them sample data described above.<br/><br/>
+Running this program will clear all entries previously existing in all tables, and then fill all tables with the sample data described above.<br/><br/>
 
 
 
@@ -45,5 +45,7 @@ RULE_COUNT: *The total number of different possible rules.*<br/>
 -------------------------------------------------------------------------------
 
 **Run Instructions:**
+
+Before running make sure to adjust python_publisher/constants.py and python_subscriber/constants.py as needed. In a terminal window, run  the following: <br/><br/>
 
         $ python3 historical_traffic.py

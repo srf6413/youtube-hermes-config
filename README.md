@@ -66,9 +66,35 @@ credentials for applications.
  
 
         $ protoc -I=. --python_out=python_publisher/config_change_request/ ./config_change.proto
+        $ protoc -I=. --python_out=python_subscriber/ ./impact_analysis_response.proto
+
+        TODO @ballah: add setup for cpp subscriber
 
 
 
 
 **Download Chrome Driver:**<br/>
 Download the Chromedriver here https://chromedriver.chromium.org/downloads to whatever directory you would like.
+
+**Run**
+-------------------------------------------------------------------------------
+
+**Run Instructions:**<br/><br/>
+Before running make sure to edit *python_publisher/constants.py* and *python_subscriber/constants.py* as needed. Once you are ready to run, open up three terminal windows.<br/><br/>
+Window 1:
+
+        $ cd python_subscriber
+        $ python3 main.py   
+<br/>
+Window 2:
+
+        $ cd cpp_subscriber
+        $ TODO @ballah: add cpp subscriber run instructions 
+<br/>
+Window 3:
+
+        $ cd python_publisher
+        $ python3 main.py
+
+
+**Note:** The first time you run the project each 24hr period you will be brought to MOMA Single Sign on. Select the 'Use Security Code' option and generate a security code at go/sc to log in. Once you are logged in you will be brought to Buganizer.

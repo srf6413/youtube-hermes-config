@@ -24,15 +24,6 @@ ENQUEUE_RULE_FEATURES_SPECIFIER: *The EnqueueRules template's specifier for feat
 ENQUEUE_RULE_PRIORITY_SPECIFIER: *The EnqueueRules template's specifier for priority. Default = 'Priority: '*<br/>
 AUTOMATION_USER: *The special automation user that controls automation.*<br/>
 
-**Run**
--------------------------------------------------------------------------------
-
-**Run Instructions:**
-
-        $ python3 main.py
-
-
-**Note:** The first time you run the project each 24hr period you will be brought to MOMA Single Sign on. Select the 'Use Security Code' option and generate a security code at go/sc to log in. Once you are logged in and see Buganizer, close the browser and re-reun main.py.
 
 **Logs**
 -------------------------------------------------------------------------------
