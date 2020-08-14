@@ -12,7 +12,7 @@ Once the bug is created, the request is automatically sent to CAT where it is pr
 
 **Setup Instructions:**
 -------------------------------------------------------------------------------
-
+TODO: Use a docker image for setup. <br/><br/>
 **Authentication:**
 
 This program requires authentication to be setup. Refer to the
@@ -24,6 +24,14 @@ credentials for applications.
     
 <br/>
 
+**Set Environment Variables**<br/>
+*PROJECT_ID* -find this under *Project info* in GCP<br/>
+*SERVICE_ACCOUNT_JSON_KEY* - the file name of the service account JSON key
+
+        $ export PROJECT='[PROJECT_ID]'
+        $ export GOOGLE_APPLICATION_CREDENTIALS=~/Downloads/[SERVICE_ACCOUNT_JSON_KEY]
+
+TODO: Switch this out for gcloud authentication <br/>
 **Install Dependencies**
 
 1. Clone the project repository in whatever directory you want to use.
@@ -42,9 +50,9 @@ credentials for applications.
 
 3. Create a virtualenv. For more info: https://virtualenv.pypa.io/
 
-        $ cd your-project
+        $ cd youtube-hermes-config
         $ python3 -m venv venv
-        $ source env/bin/activate
+        $ source venv/bin/activate
 
 4. Install the dependencies needed to run the program. For more info: https://pip.pypa.io/
 
@@ -54,18 +62,18 @@ credentials for applications.
         $ pip install selenium
         $ pip install matplotlib
         $ pip install pandas
-
-**Set Environment Variables**
-
-        $ export PROJECT='[PROJECT_ID]'
-        $ export GOOGLE_APPLICATION_CREDENTIALS=~=/Downloads/[SERVICE_ACCOUNT_JSON_KEY]
     
 **Set up Protocol Buffer**
 
  First view instructions and download the protocol buffer compiler at : https://developers.google.com/protocol-buffers
  
 
+        $ PROTOC_ZIP=protoc-3.7.1-linux-x86_64.zip curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/$PROTOC_ZIP 
+        $ sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
+        $ sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
+        $ rm -f $PROTOC_ZIP
         $ protoc -I=. --python_out=python_publisher/config_change_request/ ./config_change.proto
+        $ protoc -I=. --python_out=python_subscriber/ ./config_change.proto
         $ protoc -I=. --python_out=python_subscriber/ ./impact_analysis_response.proto
 
         TODO @ballah: add setup for cpp subscriber
@@ -80,7 +88,8 @@ Download the Chromedriver here https://chromedriver.chromium.org/downloads to wh
 -------------------------------------------------------------------------------
 
 **Run Instructions:**<br/><br/>
-Before running make sure to edit *python_publisher/constants.py* and *python_subscriber/constants.py* as needed. Once you are ready to run, open up three terminal windows.<br/><br/>
+Before running **make sure to edit *python_publisher/constants.py* and *python_subscriber/constants.py*** as needed. **You will need to create two different Chrome profiles** and enter their file paths into the respective constants.py file. To find the file path visit *chrome://version* and look under **Profile Path**.
+<br/><br/>Once you are ready to run, open three terminal windows. Make sure there are **no open Chrome windows** with the profiles that you are using.<br/><br/>
 Window 1:
 
         $ cd python_subscriber
@@ -97,4 +106,4 @@ Window 3:
         $ python3 main.py
 
 
-**Note:** The first time you run the project each 24hr period you will be brought to MOMA Single Sign on. Select the 'Use Security Code' option and generate a security code at go/sc to log in. Once you are logged in you will be brought to Buganizer.
+**Note:** The first time you run the project each 24hr period you will be brought to MOMA Single Sign on. Select the 'Use Security Code' option and **generate a security code at go/sc to log in**. Once you are logged in you will be brought to Buganizer.

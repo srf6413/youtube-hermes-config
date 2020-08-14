@@ -5,8 +5,6 @@ PROJECT_ID = "google.com:youtube-admin-pacing-server"
 TOPIC_NAME = "BuganizerCR"
 #Buganizer Url
 URL = "https://b.corp.google.com/issues?q=status:open%20componentid:898075&s=created_time:desc"
-#Path to project
-PROJECT_PATH = "/usr/local/google/home/sauloferreira/Development/youtube-hermes-config/publisher"
 #Path to Chrome driver
 DRIVER_PATH = "/opt/google/chrome/chromedriver"
 #Path to Chrome profile
