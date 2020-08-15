@@ -1,7 +1,7 @@
 # Buganizer Impact Response Subscriber
 
 ## **Overview:**
-The Buganizer subscriber subsystem constantly pulls messages from a given Pub/Sub topic. These messages contain serialized Impact Analysis Response protobuf objects. The subscriber will process the messages one at a time, so that if there are multiple configuration requests from the same issue, they will never be processed concurrently, and the issue will be closed or invalidated accordingly. Processing each message means that the subscriber will deserialize the protobuf object and check if there are affected queues and/or an error message. If there are affected queues and there is no error message (EnqueueRules or RoutingTargets success), then an impact analysis graph will be generated and posted to Buganizer. If there are no affected queues and no error message (QueueInfo success), then a change log will be uploaded to Buganizer. And finally if there are no affected queues and there exists an error message (unsuccessful), then a detailed message explaining why the request is invalid will be uploaded to Buganizer. In the two cases that the change request was valid, then the subscriber will mark the issue as Fixed. If it was unsuccessful, then the subscriber will re-assign the issue to the reporter so they can fix whatever went wrong. <br/><br/>
+The Buganizer subscriber subsystem constantly pulls messages from a given Pub/Sub topic. These messages contain serialized Impact Analysis Response protobuf objects. The subscriber will process the messages one at a time, so that if there are multiple configuration requests from the same issue, they will never be processed concurrently, and the issue will be closed or invalidated accordingly. Processing each message means that the subscriber will deserialize the protobuf object and check if there are affected queues and/or an error message. If there are affected queues and there is no error message (EnqueueRules or RoutingTargets success), then an impact analysis graph will be generated and posted to Buganizer. If there are no affected queues and no error message (QueueInfo success), then a change log will be uploaded to Buganizer. And finally if there are no affected queues and there exists an error message (unsuccessful), then a detailed message explaining why the request is invalid will be uploaded to Buganizer. <br/><br/>
 
 
 **Configuration**
@@ -17,15 +17,6 @@ DRIVER_PATH: *Path to the Chromedriver.*<br/>
 PROFILE_PATH: *Path to the Chrome profile you would like to use. Visit chrome://version if you are unsure.*<br/>
 AUTOMATION_USER: *The special automation user that controls automation.*<br/>
 
-**Run**
--------------------------------------------------------------------------------
-
-**Run Instructions:**
-
-        $ python3 main.py
-
-
-**Note:** The first time you run the project each 24hr period you will be brought to MOMA Single Sign on. Select the 'Use Security Code' option and generate a security code at go/sc to log in. Once you are logged in and see Buganizer, close the browser and re-reun main.py.
 
 **Logs**
 -------------------------------------------------------------------------------

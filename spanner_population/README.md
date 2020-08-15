@@ -17,11 +17,11 @@ This data is populated in a way that ensures maximum randomness within constrain
  * Routed Signal<br/>
  * Verdict Signal <br/>
 
-This data is populated in a way that ensures maximum randomness, while simulating realistic life cycles of entities. In order for life cycles to be realistic, EnqueueSignal timestamps must be earlier than corresponding RoutedSignal entries if they were routed, and VerdictSignal entries if they were not routed. If it was routed and a verdict was reached, the timestamp for the RoutedSignal must be earlier than the VerdictSignal. Queue Id fields for these cases must also reflect correct movement from queue to queue. In the real system, an entity could be routed multiple times, however, for simplicity, we will be assuming entities can only be routed once at most.
+This data is populated in a way that ensures maximum randomness, while simulating realistic life cycles of entities. In order for life cycles to be realistic, EnqueueSignal timestamps must be earlier than corresponding RoutedSignal entries if they were routed, and VerdictSignal entries if they were not routed. If it was routed and a verdict was reached, the timestamp for the RoutedSignal must be earlier than the VerdictSignal. Queue Id fields for these cases must also reflect correct movement from queue to queue. If an entity is routed, the from-queue must match the queue id for the enqueue signal of that entity. If a verdict signal is made the queue id must either match that of the respective enqueue signal if it was not routed, or the to-queue of the routed signal if it was routed.  In the real system, an entity could be routed multiple times, however, for simplicity, we will be assuming entities can only be routed once at most.
  <br/><br/>
 
 ## Functionality:<br/>
-Running this program will clear all entries previously existing in all tables, and then fill all tables with them sample data described above.<br/><br/>
+Running this program will clear all entries previously existing in all tables, and then fill all tables with the sample data described above.<br/><br/>
 
 
 
@@ -45,5 +45,7 @@ RULE_COUNT: *The total number of different possible rules.*<br/>
 -------------------------------------------------------------------------------
 
 **Run Instructions:**
+
+Before running make sure to adjust python_publisher/constants.py and python_subscriber/constants.py as needed. In a terminal window, run  the following: <br/><br/>
 
         $ python3 historical_traffic.py

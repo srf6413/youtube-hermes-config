@@ -1,7 +1,7 @@
 # Buganizer Scraper
 
 ## **Overview:**
-Once running, this subsystem constantly iterates through various issues under a configuration type, and attempts to scrape data from any issue possible. The way that this automation will be controlled is through a special automation user. Upon creation of the Buganizer issue, it will be assigned to this automation user eg. 'hermesautomationuser@google.com'. As the system iterates through issues and comes across an issue that is open and assigned to the automation user, it will scrape all of its change request data. It will then put the change request data inside of a protobuf object (config_change.proto) that will hold all necessary fields depending on the configuration change type. Once this proto is created, it will be deserialized and published in a Pub/Sub message. The backend will pull these messages where they will be processed.
+Once running, this subsystem constantly iterates through various issues under a configuration type, and attempts to scrape data from any issue possible. The way that this automation will be controlled is through a special automation user. Upon creation of the Buganizer issue, it will be assigned to this automation user eg. 'hermesautomationuser@google.com'. As the system iterates through issues and comes across an issue that is open and assigned to the automation user, it will scrape all of its change request data. It will then put the change request data inside of a protobuf object (config_change.proto) that will hold all necessary fields depending on the configuration change type. Once this proto is created, it will be deserialized and published in a Pub/Sub message. The ConfigurationAutomationTool(CAT) will pull these messages where they will be processed.
  <br/><br/>
 
 
@@ -24,15 +24,6 @@ ENQUEUE_RULE_FEATURES_SPECIFIER: *The EnqueueRules template's specifier for feat
 ENQUEUE_RULE_PRIORITY_SPECIFIER: *The EnqueueRules template's specifier for priority. Default = 'Priority: '*<br/>
 AUTOMATION_USER: *The special automation user that controls automation.*<br/>
 
-**Run**
--------------------------------------------------------------------------------
-
-**Run Instructions:**
-
-        $ python3 main.py
-
-
-**Note:** The first time you run the project each 24hr period you will be brought to MOMA Single Sign on. Select the 'Use Security Code' option and generate a security code at go/sc to log in. Once you are logged in and see Buganizer, close the browser and re-reun main.py.
 
 **Logs**
 -------------------------------------------------------------------------------
