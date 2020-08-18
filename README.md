@@ -24,6 +24,8 @@ credentials for applications.
     
 <br/>
 
+TODO (Ballah): reduce the number of steps to install
+
 **Set Environment Variables**<br/>
 *PROJECT_ID* -find this under *Project info* in GCP<br/>
 *SERVICE_ACCOUNT_JSON_KEY* - the file name of the service account JSON key
@@ -76,7 +78,7 @@ TODO: Switch this out for gcloud authentication <br/>
         $ protoc -I=. --python_out=python_subscriber/ ./config_change.proto
         $ protoc -I=. --python_out=python_subscriber/ ./impact_analysis_response.proto
 
-        TODO @ballah: add setup for cpp subscriber
+TODO @ballah: add setup for cpp subscriber
 
 
 
@@ -86,6 +88,7 @@ Download the Chromedriver here https://chromedriver.chromium.org/downloads to wh
 
 **Run**
 -------------------------------------------------------------------------------
+TODO (Ballah): make this run on less windows
 
 **Run Instructions:**<br/><br/>
 Before running **make sure to edit *python_publisher/constants.py* and *python_subscriber/constants.py*** as needed. **You will need to create two different Chrome profiles** and enter their file paths into the respective constants.py file. To find the file path visit *chrome://version* and look under **Profile Path**.
