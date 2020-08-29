@@ -27,6 +27,7 @@
 #include "absl/strings/string_view.h"
 
 #include "publisher.h"
+#include "impact.h"
 
 namespace youtube_hermes_config_subscriber {
 
@@ -51,6 +52,9 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
   using google::protobuf::util::StatusOr;
   using google::protobuf::util::Status;
   using google::protobuf::util::error::Code;
+  using youtube_hermes_config_subscriber::PublishMessage;
+  using youtube_hermes_config_subscriber::getDummyImpactAnalysis;
+  using youtube_hermes_config_subscriber::getErrorImpactAnalysis;
   
   ConfigChangeRequest config_change_request;
   bool parsed_succesfully = config_change_request.ParseFromString(message.data());
@@ -71,21 +75,20 @@ google::protobuf::util::StatusOr<ConfigChangeRequest> MessageProcessor(Message c
     for (const auto& change : config_change_request.enqueue_rule().changes()) {
       std::cout << change.DebugString() << std::endl;
     }
+    PublishMessage(getImpactAnalysis(config_change_request), kPublisherTopicLink);
   } else if (config_change_request.has_routing_rule()) {
     // Log each RoutingRule change.
     std::cout << kRoutingRuleHeader << std::endl;
     for (const auto& change : config_change_request.routing_rule().changes()) {
       std::cout << change.DebugString() << std::endl;
     }
+    PublishMessage(getImpactAnalysis(config_change_request), kPublisherTopicLink);
   } else if (config_change_request.has_queue_info()) {
     // Log each QueueInfo change.
     std::cout << kQueueInfoHeader << std::endl;
     for (const auto& change : config_change_request.queue_info().changes()) {
       std::cout << change.DebugString() << std::endl;
     }
-    PublishMessage(getDummyImpactAnalysis(config_change_request), kPublisherTopicLink);
-  }
-  else if (config_change_request.has_queue_info()) {
     PublishMessage(getEmptyImpactAnalysis(config_change_request), kPublisherTopicLink);
   }
 

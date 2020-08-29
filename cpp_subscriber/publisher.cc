@@ -28,6 +28,7 @@
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 #include "absl/strings/string_view.h"
 
+
 namespace youtube_hermes_config_subscriber {
 
 // Creates a ImpactAnalysisResponse protobuf object containing an error message and returns its serialized string.

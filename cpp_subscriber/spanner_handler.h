@@ -12,16 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef YOUTUBE_HERMES_CONFIG_SUBSCRIBER_PUBLISHER_H
-#define YOUTUBE_HERMES_CONFIG_SUBSCRIBER_PUBLISHER_H
+#ifndef YOUTUBE_HERMES_CONFIG_SUBSCRIBER_SPANNERHANDLER_H
+#define YOUTUBE_HERMES_CONFIG_SUBSCRIBER_SPANNERHANDLER_H
 
 #include <google/protobuf/stubs/statusor.h>
 #include <grpc++/grpc++.h>
 
 #include <sstream>
 #include <string>
-#include <thread>
 #include <vector>
+
+#include "models/EnqueueRule.h"
+#include "models/EnqueueSignal.h"
+#include "models/Queue.h"
+#include "models/RoutingSignal.h"
+#include "models/VerdictSignal.h"
+#include "models/Video.h"
 
 #include "google/pubsub/v1/pubsub.grpc.pb.h"
 #include "proto/config_change.pb.h"
@@ -30,13 +36,13 @@
 
 namespace youtube_hermes_config_subscriber {
 
-// Generates and returns a serialized Impact Analysis Response protobuf object.
-std::string getDummyImpactAnalysis(const ConfigChangeRequest&);
-std::string getEmptyImpactAnalysis(const ConfigChangeRequest&);
-std::string getErrorImpactAnalysis(const ConfigChangeRequest&, const std::string&);
-
-grpc::Status PublishMessage(const std::string& message_data, const std::string& topic);
+std::vector<EnqueueRule> getAllEnqueueRules();
+std::vector<EnqueueSignal> getAllEnqueueSignals();
+std::vector<EntityQueue> getAllQueues();
+std::vector<RoutingSignal> getAllRoutingSignals();
+std::vector<VerdictSignal> getAllVerdictSignals();
+std::vector<Video> getAllVideos();
 
 }  // namespace youtube_hermes_config_subscriber
 
-#endif  // YOUTUBE_HERMES_CONFIG_SUBSCRIBER_PUBLISHER_H
+#endif  // YOUTUBE_HERMES_CONFIG_SUBSCRIBER_SPANNERHANDLER_H

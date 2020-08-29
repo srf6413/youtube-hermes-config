@@ -4,7 +4,6 @@
 ## Functionality:<br/>
 This program creates and runs a Pub/Sub client object which subscribes to a specified Pub/Sub topic containing a configuration change request. Once it recives a message it gets processed in a callback function to evaluate the change request.
  
-### Todo: add and elaborate on Impact Analysis component and PubSub Response Component.
 <br/><br/>
  
 **Setup Instructions:**
@@ -52,7 +51,7 @@ Install `bazel` a build tool used to build and run this project and its dependen
  
 #### Installing & Logging into gcloud from terminal
 1. *Installing gcloud:* https://cloud.google.com/sdk/install
-2. *Using gcloud to set the project and login to authorize:* https://cloud.google.com/sdk/gcloud/reference/auth/login
+2. *Using gcloud to set thse project and login to authorize:* https://cloud.google.com/sdk/gcloud/reference/auth/login
  
 ## Install gcloud on Linux
 	$ curl https://sdk.cloud.google.com

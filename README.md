@@ -12,7 +12,6 @@ Once the bug is created, the request is automatically sent to CAT where it is pr
 
 **Setup Instructions:**
 -------------------------------------------------------------------------------
-TODO: Use a docker image for setup. <br/><br/>
 **Authentication:**
 
 This program requires authentication to be setup. Refer to the
@@ -24,16 +23,33 @@ credentials for applications.
     
 <br/>
 
-TODO (Ballah): reduce the number of steps to install
 
-**Set Environment Variables**<br/>
-*PROJECT_ID* -find this under *Project info* in GCP<br/>
-*SERVICE_ACCOUNT_JSON_KEY* - the file name of the service account JSON key
 
-        $ export PROJECT='[PROJECT_ID]'
-        $ export GOOGLE_APPLICATION_CREDENTIALS=~/Downloads/[SERVICE_ACCOUNT_JSON_KEY]
 
-TODO: Switch this out for gcloud authentication <br/>
+## Installing & Logging into gcloud from terminal
+
+1. *Installing gcloud:* https://cloud.google.com/sdk/install
+2. *Using gcloud to set the project and login to authorize:* https://cloud.google.com/sdk/gcloud/reference/auth/login
+ 
+<br>
+
+## Install gcloud on Linux
+	$ curl https://sdk.cloud.google.com
+	
+	$ bash install.sh
+ 
+ <br>
+
+## Installing on Mac os
+Download and follow instructions here. https://cloud.google.com/sdk/docs/quickstart-macos
+ 
+## gcloud Auth
+	$ gcloud auth login
+	
+	$ gcloud config set project google.com:youtube-admin-pacing-server
+
+<br><br>
+
 **Install Dependencies**
 
 1. Clone the project repository in whatever directory you want to use.
@@ -78,7 +94,8 @@ TODO: Switch this out for gcloud authentication <br/>
         $ protoc -I=. --python_out=python_subscriber/ ./config_change.proto
         $ protoc -I=. --python_out=python_subscriber/ ./impact_analysis_response.proto
 
-TODO @ballah: add setup for cpp subscriber
+
+ 
 
 
 
@@ -86,24 +103,68 @@ TODO @ballah: add setup for cpp subscriber
 **Download Chrome Driver:**<br/>
 Download the Chromedriver here https://chromedriver.chromium.org/downloads to whatever directory you would like.
 
+
+<br><br>
+**C++ Subscriber Setup Instructions:**
+-------------------------------------------------------------------------------
+<br>
+
+## Installing bazel on Ubuntu
+	$ sudo apt update && sudo apt install bazel
+ 
+## Installing bazel on Mac os with Homebrew
+	$ brew install bazel
+ 
+<br><br>
+
+## Installing & Logging into gcloud from terminal
+
+1. *Installing gcloud:* https://cloud.google.com/sdk/install
+2. *Using gcloud to set the project and login to authorize:* https://cloud.google.com/sdk/gcloud/reference/auth/login
+ 
+<br>
+
+## Install gcloud on Linux
+	$ curl https://sdk.cloud.google.com
+	
+	$ bash install.sh
+ 
+ <br>
+
+## Installing on Mac os
+Download and follow instructions here. https://cloud.google.com/sdk/docs/quickstart-macos
+ 
+## gcloud Auth
+	$ gcloud auth login
+	
+	$ gcloud config set project google.com:youtube-admin-pacing-server
+ 
+
+
+<br><br>
 **Run**
 -------------------------------------------------------------------------------
-TODO (Ballah): make this run on less windows
 
-**Run Instructions:**<br/><br/>
+ 
+**C++ Subscriber:**
+ 
+Run with bazel.
+ 
+	$ bazel run //cpp_subscriber:main
+ 
+<br><br>
+ 
+
+** Python Run Instructions:**<br/><br/>
 Before running **make sure to edit *python_publisher/constants.py* and *python_subscriber/constants.py*** as needed. **You will need to create two different Chrome profiles** and enter their file paths into the respective constants.py file. To find the file path visit *chrome://version* and look under **Profile Path**.
 <br/><br/>Once you are ready to run, open three terminal windows. Make sure there are **no open Chrome windows** with the profiles that you are using.<br/><br/>
-Window 1:
+Python Scrapper:
 
         $ cd python_subscriber
         $ python3 main.py   
 <br/>
-Window 2:
 
-        $ cd cpp_subscriber
-        $ TODO @ballah: add cpp subscriber run instructions 
-<br/>
-Window 3:
+Python Subscriber:
 
         $ cd python_publisher
         $ python3 main.py
